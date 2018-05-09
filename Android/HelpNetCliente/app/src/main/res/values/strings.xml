@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">"FAA - GP"</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_base">BaseActivity</string>
+    <string name="msg_fill_all_questions">Você precisa responder todas as questões antes de conferir as respostas, existe questões sem respostas, volte e revise as questões</string>
+    <string name="msg_category_is_empty">Esta categoria não possui nenhuma questão cadastrada</string>
+    <string name="question_number">Questão %s</string>
+    <string name="previous_button">Anterior</string>
+    <string name="next_button">Próximo</string>
+</resources>
