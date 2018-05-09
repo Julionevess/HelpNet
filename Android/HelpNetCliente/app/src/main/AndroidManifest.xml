@@ -24,7 +24,7 @@
         </activity>
 
         <activity
-            android:name="com.jns.questoesgp.activities.QuestionsActivity"
+            android:name="com.jns.questoesgp.activities.RecordOccurrence"
             android:screenOrientation="portrait">
         </activity>
 

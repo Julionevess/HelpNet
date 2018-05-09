@@ -19,12 +19,11 @@ import com.jns.questoesgp.util.AndroidUtil;
 import com.jns.questoesgp.util.SharedPreferenceUtil;
 import com.jns.questoesgp.util.Util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class QuestionsActivity extends AppCompatActivity implements View.OnClickListener {
+public class RecordOccurrence extends AppCompatActivity implements View.OnClickListener {
 
 	private TextView tvQuestion;
 	private TextView tvGiveUp;
@@ -111,7 +110,7 @@ public class QuestionsActivity extends AppCompatActivity implements View.OnClick
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				final String answer = optionsViews.get(checkedId);
-				QuestionsActivity.this.answer.setAnswer(answer);
+				RecordOccurrence.this.answer.setAnswer(answer);
 			}
 		});
 		options = Util.unsortedList(selectedQuestion);
@@ -199,7 +198,7 @@ public class QuestionsActivity extends AppCompatActivity implements View.OnClick
 		if (isLastQuestion) {
 
 			if (!hasAllAnswerFilled()) {
-				AndroidUtil.showMessageOK(QuestionsActivity.this, getString(R.string.msg_fill_all_questions));
+				AndroidUtil.showMessageOK(RecordOccurrence.this, getString(R.string.msg_fill_all_questions));
 			} else {
 				SharedPreferenceUtil.setListAnswer(getApplicationContext(), Arrays.asList(answers));
 				startActivity(new Intent(getApplicationContext(), AnswerActivity.class));

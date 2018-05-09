@@ -37,20 +37,6 @@
             android:text="Seja bem vindo!" />
 
 
-        <!--android.support.v7.widget.CardView
-            android:id="@+id/cvContentTitle"
-            android:layout_below="@id/tvTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="30dp"
-            app:cardElevation="8dp"
-            app:cardCornerRadius="8dp"
-            -->
             <TextView
                 android:id="@+id/tvContentTitle"
                 android:layout_width="wrap_content"
@@ -61,31 +47,27 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/colorPrimaryDark"
-                android:text="Escolha uma disciplina específica do Gerenciamento de Projetos, selecione a opção para todas as categorias ou selecione a opção para inserir um código e boa sorte!" />
+                android:text="Esta ferramenta irá te ajudar a resolver o problema da sua internet, toque na imagem abaixo para reportar algum problema ou dificuldade em utilizar a sua Internet." />
 
         </android.support.v7.widget.CardView>
 
         <!--/android.support.v7.widget.CardView-->
 
-        <android.support.v7.widget.GridLayout
-            android:id="@+id/glMain"
+
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/cvTitle"
-            app:columnCount="3"
-            app:rowCount="6">
+            android:gravity="center">
 
-            <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvOpenOS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_gravity="center_horizontal|center_vertical"
             app:cardElevation="8dp"
             app:cardCornerRadius="8dp"
-            android:id="@+id/cardIntegration"
             >
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -96,450 +78,21 @@
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
+                    android:layout_height="85dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@mipmap/integration" />
+                    android:src="@mipmap/reapir" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Integração"
+                    android:text="Informar problema na internet"
                     android:textAlignment="center"
                     android:textColor="@color/cardview_shadow_start_color"
                     android:textSize="14sp"
                     android:textStyle="bold"
 
                     />
-
-
             </LinearLayout>
             </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textAlignment="center"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardScope"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:textAlignment="center"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/scope"
-                        />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Escopo"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardSchedule"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/time"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cronograma"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardCost"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/cost"
-                        />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="custo"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardQuality"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/quality"
-                        />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Qualidade"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardResources"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/team" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Recursos"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardComunication"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/communication"
-                        />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Comunicação"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardRisk"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/risk" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Risco"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardAquisition"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/acquisition" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Aquisições"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardStackholders"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/stakeholders" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Partes Interessadas"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardAllSubject"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/all"
-                        />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Todas as disciplinas"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="8dp"
-                android:id="@+id/cardCode"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:orientation="vertical"
-                    android:layout_margin="16dp">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/code"
-                        />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Informar código"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_shadow_start_color"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-        </android.support.v7.widget.GridLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
