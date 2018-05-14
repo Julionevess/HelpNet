@@ -8,26 +8,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.jns.questoesgp.model.Answer;
-import com.jns.questoesgp.model.Question;
+
 import com.jns.questoesgp.questoesgp.R;
 import com.jns.questoesgp.util.BaseActivity;
-import com.jns.questoesgp.util.SharedPreferenceUtil;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import com.jns.questoesgp.util.Constants;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public static Context context;
+    private CardView cvOpenOS;
 
     private void init() {
         context = this;
@@ -41,19 +30,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setSupportActionBar(toolbar);
         init();
 
-        CardView cvOpenOS = (CardView) findViewById(R.id.cvOpenOS);
-
+        cvOpenOS = (CardView) findViewById(R.id.cvOpenOS);
         cvOpenOS.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.cvOpenOS) {
-            SharedPreferenceUtil.getListQuestion(context);
+        if (v.getId() == cvOpenOS.getId()) {
             final Intent intent = new Intent(context, RecordOccurrence.class);
             startActivity(intent);
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        handleBundle();
+    }
+
+
+    private void handleBundle() {
+        Intent intent = getIntent();
+        String origin = intent.getStringExtra(Constants.ORIGIN_ACTIVITY);
+        if (origin != null && origin.equals(Constants.CONFIRMED)){
+               finish();
+        }
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

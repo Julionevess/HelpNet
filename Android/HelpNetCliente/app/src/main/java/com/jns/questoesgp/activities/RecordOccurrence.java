@@ -1,142 +1,122 @@
 package com.jns.questoesgp.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.jns.questoesgp.model.Answer;
-import com.jns.questoesgp.model.Question;
-import com.jns.questoesgp.questoesgp.R;
-import com.jns.questoesgp.util.AndroidUtil;
-import com.jns.questoesgp.util.SharedPreferenceUtil;
-import com.jns.questoesgp.util.Util;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import com.jns.questoesgp.questoesgp.R;
+import com.jns.questoesgp.util.BaseActivity;
+import com.jns.questoesgp.util.SharedPreferenceUtil;
+import com.weiwangcn.betterspinner.library.BetterSpinner;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class RecordOccurrence extends AppCompatActivity implements View.OnClickListener {
+public class RecordOccurrence extends BaseActivity implements View.OnClickListener {
 
-	private TextView tvQuestion;
-	private TextView tvGiveUp;
+	private BetterSpinner spProblem;
+	private List<String> problems;
+	private Button btnSend;
+	private Button btnSearchCPF;
+	private Button btnAbort;
+	private TextView tvToobar;
+	private EditText etCpf;
+	private LinearLayout llAction;
 
-	public Answer answers[];
-	public List<Question> questions;
-	public int currentPage = 0;
-
-	public Question selectedQuestion;
-	public List<String> options;
-	private Answer answer;
-	private Answer selectedAnswer;
-	private HashMap<Integer, String> optionsViews;
-	private boolean isLastQuestion = false;
-	private boolean isFirstQuestion = false;
-	private int totalQuestions;
-	private Button btnBack;
-	private Button btnNext;
+	private CardView cvProblem;
+	private CardView cvIdentify;
+	Context context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_questions);
+		setContentView(R.layout.activity_record_occurrence);
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		tvQuestion = (TextView) findViewById(R.id.tvQuestion);
-		tvGiveUp = (TextView) findViewById(R.id.tvGiveUp);
-		tvGiveUp.setOnClickListener(this);
+		spProblem = (BetterSpinner) findViewById(R.id.spProblem);
+        btnSend = (Button) findViewById(R.id.btnSend);
+        btnAbort = (Button) findViewById(R.id.btnAbort);
+        btnSearchCPF = (Button) findViewById(R.id.btnSearchCPF);
+        cvProblem = (CardView) findViewById(R.id.cvProblem);
+        cvIdentify = (CardView) findViewById(R.id.cvIdentify);
+        llAction = (LinearLayout) findViewById(R.id.llAction);
+        tvToobar = (TextView) findViewById(R.id.tvToobar);
+        etCpf = (EditText) findViewById(R.id.etCpf);
 
-		btnNext = (Button) findViewById(R.id.btnNext);
-		btnBack = (Button) findViewById(R.id.btnBack);
+        btnSend.setOnClickListener(this);
+        btnAbort.setOnClickListener(this);
+        btnSearchCPF.setOnClickListener(this);
 
-		btnBack.setOnClickListener(this);
-		btnNext.setOnClickListener(this);
+		init();
+
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-
-		totalQuestions = getIntent().getExtras().getInt("totalQuestions");
-		answers = new Answer[totalQuestions];
-		renderQuestion();
 	}
 
-	private void renderQuestion() {
+	private void init(){
+		context = this;
+		getProblems();
+        //getProviders();
 
-		isLastQuestion = totalQuestions == (currentPage + 1);
-		isFirstQuestion = currentPage == 0;
-
-		if (isLastQuestion)
-			btnNext.setText("Entregar o questionário");
-		else
-			btnNext.setText("Next");
-		if (isFirstQuestion)
-			btnBack.setVisibility(View.INVISIBLE);
-		else
-			btnBack.setVisibility(View.VISIBLE);
-
-		questions = SharedPreferenceUtil.getListQuestion(getApplicationContext());
-		if (questions.size() > 0) {
-			selectedQuestion = questions.get(currentPage);
-		}
-		answer = new Answer();
-		answer.setQuestion(questions.get(currentPage).getQuestion());
-		answer.setCorrectAnswer(questions.get(currentPage).getAnswer());
-
-		optionsViews = new HashMap<>();
-
-		TextView tvQuestionNumber = (TextView) findViewById(R.id.tvQuestionNumber);
-		tvQuestionNumber.setText(getString(R.string.question_number, String.valueOf(currentPage + 1)));
-
-		populateAnswerOptions();
+        if (userIsLoged()){
+            tvToobar.setVisibility(View.VISIBLE);
+            cvIdentify.setVisibility(View.GONE);
+            cvProblem.setVisibility(View.VISIBLE);
+            llAction.setVisibility(View.VISIBLE);
+        }else{
+            tvToobar.setVisibility(View.INVISIBLE);
+            cvIdentify.setVisibility(View.VISIBLE);
+            cvProblem.setVisibility(View.INVISIBLE);
+            llAction.setVisibility(View.INVISIBLE);
+        }
 	}
 
-	private void populateAnswerOptions() {
-		RadioGroup rgOptions = (RadioGroup) findViewById(R.id.rgOptions);
-		rgOptions.clearCheck();
-		rgOptions.removeAllViews();
+	private boolean userIsLoged(){
+        if (SharedPreferenceUtil.getCPF(context) != null && !SharedPreferenceUtil.getCPF(context).equals("")){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
+	private void getProblems(){
 
-		rgOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				final String answer = optionsViews.get(checkedId);
-				RecordOccurrence.this.answer.setAnswer(answer);
-			}
-		});
-		options = Util.unsortedList(selectedQuestion);
-		tvQuestion.setText(selectedQuestion.getQuestion());
+        problems = new ArrayList<String>();
+		problems.add("Patiu o fio");
+		problems.add("Sem internet");
+		problems.add("Internet lenta");
 
-		int id = 0;
-		for (String option : options) {
-			final RadioButton rb = createRadioButton(rgOptions);
-			rb.setText(option);
-			rb.setId(id);
-			rgOptions.addView(rb);
-			optionsViews.put(id, option);
-			id++;
-			if (selectedAnswer != null && selectedAnswer.getAnswer() != null && selectedAnswer.getAnswer().equals(option)) {
-				rb.setChecked(true);
-			} else {
-				rb.setChecked(false);
-			}
-		}
-
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, problems);
+        spProblem = (BetterSpinner) findViewById(R.id.spProblem);;
+        spProblem.setAdapter(adapter);
 	}
 
-	private RadioButton createRadioButton(RadioGroup viewGroup) {
-		final LayoutInflater layoutInflater = getLayoutInflater();
-		return (RadioButton) layoutInflater.inflate(R.layout.radio_button_item, viewGroup, false);
-	}
+//    private void getProviders(){
+//
+//        providers = new ArrayList<String>();
+//        providers.add("HOF - Homar Net");
+//        providers.add("OI");
+//        providers.add("Minha NET");
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.activity_list_item, providers);
+//        adapter.setDropDownViewResource(android.R.layout.activity_list_item);
+//        spProvider.setAdapter(adapter);
+//    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,61 +140,36 @@ public class RecordOccurrence extends AppCompatActivity implements View.OnClickL
 		return super.onOptionsItemSelected(item);
 	}
 
+    private boolean formValided(){
+
+	    if (!spProblem.getText().toString().equals("")){
+	       return true;
+        }
+	    return false;
+    }
+
 	@Override
 	public void onClick(View v) {
 
-		if (v.getId() == R.id.btnNext) {
-
-		    if (answer != null){
-                answers[currentPage] = answer;
+        if (v.getId() == btnSend.getId()) {
+            if (formValided()) {
+                final Intent intent = new Intent(context, ConfirmOSActivity.class);
+                startActivity(intent);
+            }else{
+                showSnackMessage(R.string.withoutProblem);
             }
-
-			if (handleLastQuestion())
-				return;
-
-			SharedPreferenceUtil.setListAnswer(getApplicationContext(), Arrays.asList(answers));
-			currentPage++;
-			selectedAnswer = answers[currentPage];
-
-			renderQuestion();
-
-		} else if (v.getId() == tvGiveUp.getId()) {
-			Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(intent);
-		} else if (v.getId() == R.id.btnBack) {
-            if (answer != null){
-                answers[currentPage] = answer;
-            }
-			if (currentPage > 0) {
-				currentPage--;
-				selectedAnswer = answers[currentPage];
-				renderQuestion();
-			}
-		}
+        }else if (v.getId() == btnAbort.getId()) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            finish();
+        }else if (v.getId() == btnSearchCPF.getId()) {
+            cvProblem.setVisibility(View.VISIBLE);
+            cvIdentify.setVisibility(View.GONE);
+            llAction.setVisibility(View.VISIBLE);
+            SharedPreferenceUtil.setCPF(context, etCpf.getText().toString());
+            tvToobar.setVisibility(View.VISIBLE);
+        }
 	}
 
-	private boolean handleLastQuestion() {
-		if (isLastQuestion) {
 
-			if (!hasAllAnswerFilled()) {
-				AndroidUtil.showMessageOK(RecordOccurrence.this, getString(R.string.msg_fill_all_questions));
-			} else {
-				SharedPreferenceUtil.setListAnswer(getApplicationContext(), Arrays.asList(answers));
-				startActivity(new Intent(getApplicationContext(), AnswerActivity.class));
-				finish();
-			}
-			return true;
-		}
-		return false;
-	}
-
-	private boolean hasAllAnswerFilled() {
-		for (Answer answer : answers) {
-			if (answer.getAnswer() == null || answer.getAnswer().trim().equals("")) {
-				return false;
-			}
-		}
-		return true;
-	}
 }

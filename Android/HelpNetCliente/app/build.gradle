@@ -35,4 +35,7 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:25.3.1'
     //Glide - download of images
     implementation 'com.github.bumptech.glide:glide:3.7.0'
+
+    //Spinner
+    implementation 'com.weiwangcn.betterspinner:library:1.1.0'
 }

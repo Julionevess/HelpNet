@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jns.questoesgp.activities.ConfirmOSActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:theme="@style/ToolBarStyle" >
+
+            <TextView
+                android:id="@+id/tvToobar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:layout_gravity="right"
+                android:layout_marginRight="10dp"
+                android:textSize="18sp"
+                android:visibility="invisible"
+                android:text="Bem vindo Homar "/>
+
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/layout_texts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="60dp"
+        android:layout_toRightOf="@+id/iv_customer"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="4dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="85dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:src="@mipmap/check" />
+
+        <TextView
+            android:id="@+id/tvResume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:textAlignment="center"
+            android:textSize="18sp"
+
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            android:text="Solicitação cadastrada com sucesso!" />
+
+        <TextView
+            android:id="@+id/tvAnswerCorrect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_black_color"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="Entraremos em contato com você em breve." />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="40dp"
+            android:text="@string/close_button"
+            android:theme="@style/PrimaryFlatButton"/>
+
+
+
+    </LinearLayout>
+
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>
