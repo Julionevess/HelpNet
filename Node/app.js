@@ -65,11 +65,21 @@ router.get('/version', function(req, res, next) {
 */
 
 app.get('/version', (req, res) => {
-  res.send('Version_20180515');
+  res.send('Version_20180516');
 });
 
 app.get('/listOS', (req, res) => {
-  connection.readData(function(err, rows, fields){
+  connection.listOS(function(err, rows, fields){
+    console.log('Lista Carregada.', "ok");
+    res.send(JSON.stringify(rows));
+  });
+});
+/*
+
+*/
+app.post('/listOSBySituation', (req, res) => {
+  var os = req.body;  
+  connection.listOSBySituation(os, function(err, rows, fields){
     console.log('Lista Carregada.', "ok");
     res.send(JSON.stringify(rows));
   });
@@ -78,24 +88,31 @@ app.get('/listOS', (req, res) => {
 
 app.post('/registerOS', (req, res) => {
   var os = req.body;  
-   connection.createOS(os, function(err, rows, fields){
+   connection.registerOS(os, function(err, rows, fields){
     console.log('OS Registrada', JSON.stringify(rows));
     res.send(rows); 
   });
 });
 
-
-
-
-app.post('/test-page', function(req, res) {
-  var name = req.body.id,
-      color = req.body.color,
-      body = req.body; 
-      console.log(name + color)
-      res.send(body ); 
+app.post('/associateTechnical', (req, res) => {
+  var os = req.body;  
+  console.log(os);
+   connection.associateTechnical(os, function(err, rows, fields){
+    console.log('Técnico associado', JSON.stringify(rows));
+    res.send(rows); 
+  });
 });
 
+/*
 
+*/
+app.post('/changeSituationOS', (req, res) => {
+  var os = req.body;  
+   connection.changeSituationOS(os, function(err, rows, fields){
+    console.log('Técnico associado', JSON.stringify(rows));
+    res.send(rows); 
+  });
+});
 
 
 
