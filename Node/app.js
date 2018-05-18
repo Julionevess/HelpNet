@@ -87,12 +87,63 @@ app.post('/listOSBySituation', (req, res) => {
 
 
 app.post('/registerOS', (req, res) => {
+  console.log("iniciou transação");
+  var os = req.body;
+  connection.registerOS(os, function(err, rows, fields){
+    console.log('Lista Carregada.', "ok");
+    res.send(JSON.stringify(rows));
+  });
+});
+  
+  
+  
+  /*
+  exports.transaction = function(connection, body, done) {
+    connection.getConnection(function(err, conn) {
+      conn.beginTransaction(function(err){
+        console.log("iniciou transação");
+        if (err) { 
+          console.log("Erro...");
+          throw err; }
+          conn.registerOS(os, function(err, rows, fields){
+          console.log('OS Registrada', JSON.stringify(rows));
+          res.send(rows);
+          if (err){
+            console.log("Fazendo roolback");
+            conn.rollback(function(){
+              throw err;
+            });
+          }else{
+            var event = model.event;
+            event.event.osId = res.id;
+            conn.createEvent(event, function(err, rows, fields){
+              console.log('Evento Criado: ', JSON.stringify(rows));
+
+              conn.commit(function(err) {
+                if (err) { 
+                  conn.rollback(function() {
+                    throw err;
+                  });
+                }
+                console.log('success!');
+              });
+
+              });     
+            }
+        });
+      });
+    })}
+});
+  */
+/*
   var os = req.body;  
    connection.registerOS(os, function(err, rows, fields){
     console.log('OS Registrada', JSON.stringify(rows));
     res.send(rows); 
   });
 });
+*/
+
 
 app.post('/associateTechnical', (req, res) => {
   var os = req.body;  
