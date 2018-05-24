@@ -68,12 +68,26 @@ app.get('/version', (req, res) => {
   res.send('Version_20180516');
 });
 
+app.get('/listSituations', (req, res) => {
+  connection.listSituations(function(err, rows, fields){    
+    res.send(JSON.stringify(rows));
+  });
+});
+
+app.get('/listProblems', (req, res) => {
+  connection.listProblems(function(err, rows, fields){    
+    res.send(JSON.stringify(rows));
+  });
+});
+
 app.get('/listOS', (req, res) => {
   connection.listOS(function(err, rows, fields){
     console.log('Lista Carregada.', "ok");
     res.send(JSON.stringify(rows));
   });
 });
+
+
 /*
 
 */
@@ -150,7 +164,7 @@ app.post('/associateTechnical', (req, res) => {
   console.log(os);
    connection.associateTechnical(os, function(err, rows, fields){
     console.log('Técnico associado', JSON.stringify(rows));
-    res.send(rows); 
+    res.send(JSON.stringify(rows)); 
   });
 });
 
@@ -161,7 +175,7 @@ app.post('/changeSituationOS', (req, res) => {
   var os = req.body;  
    connection.changeSituationOS(os, function(err, rows, fields){
     console.log('Técnico associado', JSON.stringify(rows));
-    res.send(rows); 
+    res.send(JSON.stringify(rows)); 
   });
 });
 
