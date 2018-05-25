@@ -9,14 +9,7 @@ var connection = mysql.createConnection({
 });
 
 module.exports = {
-    
-    //
-    // Conecta com o banco de dados
-    //
-    openConnection: function openConnection(){
-        connection.connect();
-    },
-    
+       
     //
     // Executa Query quando não houver transação
     //
@@ -49,16 +42,16 @@ module.exports = {
     //
     // Listar todas as OS de um determinado provedor
     //
-    listOS: function listOS(callback) {
-        var sql = util.format('SELECT * FROM OS WHERE PROVEDOR_ID = %d', object.providerId);
+    listOS: function listOS(providerId, callback) {
+        var sql = util.format('SELECT * FROM OS WHERE PROVEDOR_ID = %d', providerId);
         this.runQuery(sql, callback.bind(this));
     },
     
     //
     // Listar as OS de um determinado provedor, filtrnado pela situação 
     //
-    listOSBySituation: function listOSBySituation(object, callback) {
-        var sql = util.format('SELECT * FROM OS WHERE SITUACAO_ID = %d AND PROVEDOR_ID = %d', object.situationId, object.providerId);
+    listOSBySituation: function listOSBySituation(providerId, situationId, callback) {
+        var sql = util.format('SELECT * FROM OS WHERE PROVEDOR_ID = %d AND SITUACAO_ID = %d', providerId, situationId);
         this.runQuery(sql, callback.bind(this));
     },
     
@@ -66,14 +59,7 @@ module.exports = {
     // Registra uma nova OS
     //
     registerOS: function registerOS(os, callback) {  
-        connection.connect(function(err) {
-            if (err) {
-                console.error('error connecting: ' + err.stack);
-                return;
-            }
-            console.log('connected as id ' + connection.threadId);
-        });
-        
+
         connection.beginTransaction(function(err){
             console.log("iniciou transação");
             if (err) { 
@@ -109,8 +95,7 @@ module.exports = {
                                     throw err;
                                 });
                             }
-                            console.log('Transação completa.');
-                            connection.end();                            
+                            console.log('Transação completa.');                                                     
                             callback(err, event.osId, fields);
                         });                        
                     });     
@@ -124,14 +109,7 @@ module.exports = {
         //
         // Associate Technical
         //
-    associateTechnical: function associateTechnical(os, callback) { 
-        connection.connect(function(err) {
-            if (err) {
-                console.error('error connecting: ' + err.stack);
-                return;
-            }
-            console.log('connected as id ' + connection.threadId);
-        });
+    associateTechnical: function associateTechnical(os, callback) {        
         
         connection.beginTransaction(function(err){
             console.log("iniciou transação");
@@ -171,8 +149,7 @@ module.exports = {
                                     throw err;
                                 });
                             }
-                            console.log('Transação completa.');
-                            connection.end();                            
+                            console.log('Transação completa.');                                                     
                             callback(err, rows, fields);
                         });                        
                     });     
@@ -181,77 +158,55 @@ module.exports = {
         });   
     },
         
-        //
-        // Finished OS
-        //
-        changeSituationOS: function changeSituationOS(model, callback) {  
-                connection.connect(function(err) {
-                    if (err) {
-                        console.error('error connecting: ' + err.stack);
-                        return;
-                    }
-                    console.log('connected as id ' + connection.threadId);
-                });
-                
-                connection.beginTransaction(function(err){
-                    console.log("iniciou transação");
-                    if (err) { 
-                        console.log("Erro. Não foi possível iniciar transação..");
-                        throw err; 
-                    }                       
-                    var sql = util.format('UPDATE OS SET SITUACAO_ID = %s WHERE id = %s', object.situationId, object.osId);
-                    connection.query(sql, function(err, result) {
-                        
-                        if (err){
-                            console.log("Fazendo roolback - Problema na atualização da OS");
-                            connection.rollback(function(){
-                                throw err;
-                            });
-                        }else{
-                            var event = os.event;
-                            console.log(result);
-                            event.osId = result.insertId;
-                            console.log("A OS com o ID = " +  event.osId  + " foi atualizada");
-                            sql = util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID, DESCRICAO, TECNICO_ID) VALUES (NOW(), %s, \'%s\',\'%s\', %s)', event.osId, event.tipoEventID, event.description, event.technicalId);
-                            connection.query(sql, function(err, result) {                        
-                                if (err){
-                                    console.log("Fazendo roolback - Problema na persistência do Evento");
-                                    connection.rollback(function(){
+    //
+    // Finished OS
+    //
+    changeSituationOS: function changeSituationOS(object, callback) {  
+       
+            connection.beginTransaction(function(err){
+                console.log("iniciou transação");
+                if (err) { 
+                    console.log("Erro. Não foi possível iniciar transação..");
+                    throw err; 
+                }                       
+                var sql = util.format('UPDATE OS SET SITUACAO_ID = %s WHERE id = %s', object.situationId, object.osId);
+                connection.query(sql, function(err, result) {
+                    
+                    if (err){
+                        console.log("Fazendo roolback - Problema na atualização da OS");
+                        connection.rollback(function(){
+                            throw err;
+                        });
+                    }else{
+                        var event = object.event;
+                        console.log(result);
+                        event.osId = object.osId;
+                        console.log("A OS com o ID = " +  event.osId  + " foi atualizada");
+                        sql = util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID, DESCRICAO, TECNICO_ID) VALUES (NOW(), %s, \'%s\',\'%s\', %s)', event.osId, event.tipoEventID, event.description, event.technicalId);
+                        connection.query(sql, function(err, result) {                        
+                            if (err){
+                                console.log("Fazendo roolback - Problema na persistência do Evento");
+                                connection.rollback(function(){
+                                    throw err;
+                                });
+                            }
+                            console.log("O Evento foi registrado com o ID = " +  object.osId );
+                            connection.commit(function(err, rows, fields) {
+                                if (err) { 
+                                    connection.rollback(function() {
+                                        console.log("Ocorreu um erro no commit da transação ");
                                         throw err;
                                     });
                                 }
-                                console.log("O Evento foi registrado com o ID = " +  result.insertId );
-                                connection.commit(function(err, rows, fields) {
-                                    if (err) { 
-                                        connection.rollback(function() {
-                                            console.log("Ocorreu um erro no commit da transação ");
-                                            throw err;
-                                        });
-                                    }
-                                    console.log('Transação completa.');
-                                    connection.end();                            
-                                    callback(err, event.osId, fields);
-                                });                        
-                            });     
-                        }
-                    });
-                });   
-            },  
-                 
-        //
-        // DELETE
-        //
-        deleteData: function deleteData(model, callback) {
-            var sql = util.format('DELETE FROM `test`.`message` where id = %s', model.id);
-            this.runQuery(sql, callback.bind(this));
-        },
-        
-        //
-        // CLOSE CONNECTION
-        //
-        closeConnection: function closeConnection(model, callback) {
-            connection.end();
-        }   
+                                console.log('Transação completa.');    
+                                callback(err, event.osId, fields);
+                            });
+                        });     
+                    }
+                });
+            });   
+        },                 
+     
     };
     
     
