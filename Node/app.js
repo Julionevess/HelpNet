@@ -65,7 +65,7 @@ router.get('/version', function(req, res, next) {
 */
 
 app.get('/version', (req, res) => {
-  res.send('Version_20180611_1');
+  res.send('Version_20180612_1');
 });
 
 app.get('/listSituationsOs', (req, res) => {
@@ -139,7 +139,7 @@ app.post('/changeSituationOS', (req, res) => {
 // testar
 */
 
-app.listen(8081, function(){
+app.listen(3000, function(){
   console.log("Server is Up");
 })
 
