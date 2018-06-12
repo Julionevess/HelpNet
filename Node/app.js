@@ -15,7 +15,7 @@ var connection = require('./connection');
 var app = express();
 var router = express.Router();
 
-app.use(bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
@@ -64,18 +64,22 @@ router.get('/version', function(req, res, next) {
 // API
 */
 
+app.get('/', (req, res) => {
+  res.send('HelpNet - Webservice alive! Ready to work.');
+});
+
 app.get('/version', (req, res) => {
-  res.send('Version_20180611_1');
+  res.send('Version_20180612_1');
 });
 
 app.get('/listSituationsOs', (req, res) => {
-  connection.listSituations(function(err, rows, fields){    
+  connection.listSituations(function (err, rows, fields) {
     res.send(JSON.stringify(rows));
   });
 });
 
 app.get('/listProblems', (req, res) => {
-  connection.listProblems(function(err, rows, fields){    
+  connection.listProblems(function (err, rows, fields) {
     res.send(JSON.stringify(rows));
   });
 });
@@ -83,7 +87,7 @@ app.get('/listProblems', (req, res) => {
 app.get('/listOS', (req, res) => {
   var providerId = req.query.providerId;
   console.log(providerId);
-  connection.listOS(providerId, function(err, rows, fields){
+  connection.listOS(providerId, function (err, rows, fields) {
     console.log('Lista Carregada.', "ok");
     res.send(JSON.stringify(rows));
   });
@@ -94,7 +98,7 @@ app.get('/listOSBySituation', (req, res) => {
   var situationId = req.query.situationId;
   console.log(providerId);
   console.log(situationId);
-  connection.listOSBySituation(providerId, situationId, function(err, rows, fields){
+  connection.listOSBySituation(providerId, situationId, function (err, rows, fields) {
     console.log('Lista Carregada.', "ok");
     res.send(JSON.stringify(rows));
   });
@@ -104,19 +108,19 @@ app.get('/listOSBySituation', (req, res) => {
 app.post('/registerOS', (req, res) => {
   console.log("iniciou transação");
   var os = req.body;
-  connection.registerOS(os, function(err, rows, fields){
+  connection.registerOS(os, function (err, rows, fields) {
     console.log('Lista Carregada.', "ok");
     res.send(JSON.stringify(rows));
   });
 });
-      
+
 
 app.post('/associateTechnical', (req, res) => {
-  var os = req.body;  
+  var os = req.body;
   console.log(os);
-   connection.associateTechnical(os, function(err, rows, fields){
+  connection.associateTechnical(os, function (err, rows, fields) {
     console.log('Técnico associado', JSON.stringify(rows));
-    res.send(JSON.stringify(rows)); 
+    res.send(JSON.stringify(rows));
   });
 });
 
@@ -124,10 +128,10 @@ app.post('/associateTechnical', (req, res) => {
 
 */
 app.post('/changeSituationOS', (req, res) => {
-  var object = req.body;  
-   connection.changeSituationOS(object, function(err, rows, fields){
+  var object = req.body;
+  connection.changeSituationOS(object, function (err, rows, fields) {
     console.log('Técnico associado', JSON.stringify(rows));
-    res.send(JSON.stringify(rows)); 
+    res.send(JSON.stringify(rows));
   });
 });
 
@@ -139,7 +143,7 @@ app.post('/changeSituationOS', (req, res) => {
 // testar
 */
 
-app.listen(8081, function(){
+app.listen(8081, function () {
   console.log("Server is Up");
 })
 
@@ -156,12 +160,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
