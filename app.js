@@ -64,6 +64,10 @@ router.get('/version', function(req, res, next) {
 // API
 */
 
+app.get('/', (req, res) => {
+  res.send('Webservice live!');
+});
+
 app.get('/version', (req, res) => {
   res.send('Version_20180611_1');
 });
