@@ -69,7 +69,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/version', (req, res) => {
-  res.send('Version_20180612_2');
+  res.send('Version_20180613_1');
 });
 
 app.get('/listSituationsOs', (req, res) => {
