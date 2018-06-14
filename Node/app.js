@@ -69,7 +69,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/version', (req, res) => {
-  res.send('Version_20180613_3');
+  res.send('Version_20180613_1');
 });
 
 app.get('/listSituationsOs', (req, res) => {
@@ -142,6 +142,7 @@ app.post('/changeSituationOS', (req, res) => {
 /*
 // testar
 */
+
 app.listen(8081, function () {
   console.log("Server is Up");
 })
