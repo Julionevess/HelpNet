@@ -1,14 +1,6 @@
 var util   = require('util');
 var mysql  = require('mysql');
 
-
-var connection2 = mysql.createConnection({  
-    host     : 'localhost',
-    user     : 'root',
-    password : 'root',
-    database : 'helpnet'
-});
-
 //AWS
 // var connection = mysql.createConnection({  
 //     host     : 'helpnet.ccyhvv2orx1w.us-east-1.rds.amazonaws.com',
