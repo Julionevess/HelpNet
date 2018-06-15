@@ -10,11 +10,19 @@ var mysql  = require('mysql');
 // });
 
 //HEROKU
-var connection = mysql.createConnection({  
+var connectionH = mysql.createConnection({  
     host     : 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
     user     : 'wnxoormb91xkfef9',
     password : 'qmwan6b8lamtbp9j',
     database : 's0xdx9gvx8au1ooc'
+});
+
+//DEV
+var connection = mysql.createConnection({  
+    host     : 'localhost',
+    user     : 'admin',
+    password : 'h3lpn3ts',
+    database : 'helpnet'
 });
 
 module.exports = {
@@ -38,6 +46,53 @@ module.exports = {
     listSituations: function listSituations(callback) {
         var sql = util.format('SELECT * FROM SITUACAO_OS');
         this.runQuery(sql, callback.bind(this));
+    },
+
+    getCustomer: function getCustomer(cpfCustomer, callback) { 
+        
+
+        var sql = util.format('SELECT * FROM provedor');
+        connection.query(sql, function (err, result) { 
+
+            var ret = [];
+            console.log("Result = " + JSON.stringify(result));
+
+            ret = JSON.stringify(result);  
+
+            console.log("ret - > " + ret);
+            console.log("ret[0] - > " + ret[0]);
+            
+            var string = JSON.stringify(result);
+            var result_1 =  JSON.parse(string);
+            console.log("json - > " + result_1[0]);
+            console.log("json - > " + result_1[0].BR_URL);
+
+            var connectionProvider = mysql.createConnection({  
+                host     : result_1.BR_URL,
+                user     : result_1.BD_USUARIO,
+                password : result_1.BD_SENHA,
+                database : result_1.BD_NOME
+            });
+   
+            
+            console.log("result.BR_URL = " + result_1.BR_URL);
+            console.log("result.BD_USUARIO = " + result_1.BD_USUARIO);
+            console.log("result.BD_SENHA = " + result_1.BD_SENHA);
+            console.log("result.BD_NOME = " + result_1.BD_NOME);
+
+
+            var sql = util.format('SELECT * FROM cliente WHERE CPF = %s', cpfCustomer);
+            console.log("Sql -> " + sql);
+            connectionProvider.query(sql, function (err, result) {
+                if (err) {
+                    console.log("Problema na conexão com a base do cliente");
+                } else {
+                    ret = JSON.stringify(result);
+                    console.log(ret);
+                }
+            });
+
+        });
     },
 
     //

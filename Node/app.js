@@ -68,23 +68,23 @@ app.get('/', (req, res) => {
   res.send('HelpNet - Webservice alive! Ready to work.');
 });
 
-app.get('/version', (req, res) => {
+app.get('/api/version', (req, res) => {
   res.send('Version_20180614_2');
 });
 
-app.get('/listSituationsOs', (req, res) => {
+app.get('/api/listSituationsOs', (req, res) => {
   connection.listSituations(function (err, rows, fields) {
     res.send(JSON.stringify(rows));
   });
 });
 
-app.get('/listProblems', (req, res) => {
+app.get('/api/listProblems', (req, res) => {
   connection.listProblems(function (err, rows, fields) {
     res.send(JSON.stringify(rows));
   });
 });
 
-app.get('/listOS', (req, res) => {
+app.get('/api/listOS', (req, res) => {
   var providerId = req.query.providerId;
   console.log(providerId);
   connection.listOS(providerId, function (err, rows, fields) {
@@ -93,7 +93,7 @@ app.get('/listOS', (req, res) => {
   });
 });
 
-app.get('/listOSBySituation', (req, res) => {
+app.get('/api/listOSBySituation', (req, res) => {
   var providerId = req.query.providerId;
   var situationId = req.query.situationId;
   console.log(providerId);
@@ -105,7 +105,7 @@ app.get('/listOSBySituation', (req, res) => {
 });
 
 
-app.post('/registerOS', (req, res) => {
+app.post('/api/registerOS', (req, res) => {
   console.log("iniciou transação");
   var os = req.body;
   connection.registerOS(os, function (err, rows, fields) {
@@ -115,7 +115,7 @@ app.post('/registerOS', (req, res) => {
 });
 
 
-app.post('/associateTechnical', (req, res) => {
+app.post('/api/associateTechnical', (req, res) => {
   var os = req.body;
   console.log(os);
   connection.associateTechnical(os, function (err, rows, fields) {
@@ -127,13 +127,24 @@ app.post('/associateTechnical', (req, res) => {
 /*
 
 */
-app.post('/changeSituationOS', (req, res) => {
+app.post('/api/changeSituationOS', (req, res) => {
   var object = req.body;
   connection.changeSituationOS(object, function (err, rows, fields) {
     console.log('Técnico associado', JSON.stringify(rows));
     res.send(JSON.stringify(rows));
   });
 });
+
+
+app.get('/api/getCustomer', (req, res) => {
+  console.log("chegou");
+  var cpfCustomer = req.query.cpfCustomer;
+  console.log(cpfCustomer);
+  connection.getCustomer(cpfCustomer, function (err, rows, fields) {    
+    res.send(JSON.stringify(rows));
+  });
+});
+
 
 
 
