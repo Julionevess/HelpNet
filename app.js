@@ -12,6 +12,8 @@ var usersRouter = require('./routes/users');
 var http = require('http');
 var connection = require('./connection');
 
+var dateTime = require('node-datetime');
+
 var app = express();
 var router = express.Router();
 
@@ -21,70 +23,42 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 
-//app.use(express.json());
-//app.use(express.urlencoded({ extended: false }));
+function createOSNumber(providerId){
 
-/*
-app.use(expressSession({secret: 'minhaChaveSecreta'}));
-app.use(passport.initialize());
-app.use(passport.session());
+  var dt = dateTime.create();
+  var formatted = dt.format('Y-m-d H:M:S');
+  var y = formatted.substring(2, 4);
+  var month = formatted.substring(5, 7);
+  var d = formatted.substring(8, 10);
+  var h = formatted.substring(11, 13);
+  var m = formatted.substring(14, 16);
+  var s =formatted.substring(17, 19);
 
-var os  = {number:'2018051401',  clienteId: 1, problemId: 2, details: 'meu problem é ...'};
-
-var os  = {number:'2018051401',clienteId:1,problemId:2,details:'meu problem é ...',event:{osId:8,technicalId:2,title:'titulo',description:'descrição...'}};
-
-var server = http.createServer(function(req, res) {
-  res.writeHead(200);
-  res.end('Hi everybody!');
-  });
-
-  //server.listen(3000);
+  return providerId + y + month + d + h + m + s;
   
-
-
-
-
-
-connection.associateTechnical(associar, function(err, rows, fields){
-  console.log('3. Leitura executada!', JSON.stringify(rows));
-  });
-
-
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-router.get('/version', function(req, res, next) {
-  res.render('index', { title: 'Version_20180515' });
-});
-
-*/
-
-/*
-// API
-*/
+}
 
 app.get('/', (req, res) => {
   res.send('HelpNet - Webservice alive! Ready to work.');
 });
 
-app.get('/version', (req, res) => {
-  res.send('Version_20180612_1');
+app.get('/api/version', (req, res) => {
+  res.send('Version_20180618_by_uilton');
 });
 
-app.get('/listSituationsOs', (req, res) => {
+app.get('/api/listSituationsOs', (req, res) => {
   connection.listSituations(function (err, rows, fields) {
     res.send(JSON.stringify(rows));
   });
 });
 
-app.get('/listProblems', (req, res) => {
+app.get('/api/listProblems', (req, res) => {
   connection.listProblems(function (err, rows, fields) {
     res.send(JSON.stringify(rows));
   });
 });
 
-app.get('/listOS', (req, res) => {
+app.get('/api/listOS', (req, res) => {
   var providerId = req.query.providerId;
   console.log(providerId);
   connection.listOS(providerId, function (err, rows, fields) {
@@ -93,7 +67,7 @@ app.get('/listOS', (req, res) => {
   });
 });
 
-app.get('/listOSBySituation', (req, res) => {
+app.get('/api/listOSBySituation', (req, res) => {
   var providerId = req.query.providerId;
   var situationId = req.query.situationId;
   console.log(providerId);
@@ -105,17 +79,16 @@ app.get('/listOSBySituation', (req, res) => {
 });
 
 
-app.post('/registerOS', (req, res) => {
-  console.log("iniciou transação");
+app.post('/api/registerOS', (req, res) => {
   var os = req.body;
-  connection.registerOS(os, function (err, rows, fields) {
-    console.log('Lista Carregada.', "ok");
+  os.number = createOSNumber(os.providerId);
+  connection.registerOS(os, function (err, rows, fields) {    
     res.send(JSON.stringify(rows));
   });
 });
 
 
-app.post('/associateTechnical', (req, res) => {
+app.post('/api/associateTechnical', (req, res) => {
   var os = req.body;
   console.log(os);
   connection.associateTechnical(os, function (err, rows, fields) {
@@ -127,13 +100,24 @@ app.post('/associateTechnical', (req, res) => {
 /*
 
 */
-app.post('/changeSituationOS', (req, res) => {
+app.post('/api/changeSituationOS', (req, res) => {
   var object = req.body;
   connection.changeSituationOS(object, function (err, rows, fields) {
     console.log('Técnico associado', JSON.stringify(rows));
     res.send(JSON.stringify(rows));
   });
 });
+
+
+app.get('/api/user/provider', (req, res) => {
+  console.log("chegou");
+  var cpfCustomer = req.query.cpfCustomer;
+  console.log(cpfCustomer);
+  connection.getCustomer(cpfCustomer, function (err, rows, fields) {    
+    res.send(JSON.stringify(rows));
+  });
+});
+
 
 
 

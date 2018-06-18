@@ -10,11 +10,19 @@ var mysql  = require('mysql');
 // });
 
 //HEROKU
-var connection = mysql.createConnection({  
+var connectionH = mysql.createConnection({  
     host     : 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
     user     : 'wnxoormb91xkfef9',
     password : 'qmwan6b8lamtbp9j',
     database : 's0xdx9gvx8au1ooc'
+});
+
+//DEV
+var connection = mysql.createConnection({  
+    host     : 'localhost',
+    user     : 'admin',
+    password : 'h3lpn3ts',
+    database : 'helpnet'
 });
 
 module.exports = {
@@ -38,6 +46,32 @@ module.exports = {
     listSituations: function listSituations(callback) {
         var sql = util.format('SELECT * FROM SITUACAO_OS');
         this.runQuery(sql, callback.bind(this));
+    },
+
+    getCustomer: function getCustomer(cpfCustomer, callback) { 
+        
+
+        var sql = util.format('SELECT * FROM provedor');
+        connection.query(sql, function (err, result) { 
+           
+/*
+            var connectionProvider = mysql.createConnection({  
+                host     : result_1.BR_URL,
+                user     : result_1.BD_USUARIO,
+                password : result_1.BD_SENHA,
+                database : result_1.BD_NOME
+            });
+   */
+            
+            var sql = util.format('select C.ID as CLIENTE_ID, C.NOME AS CLIENTE_NOME, C.CPF AS CLIENTE_CPF, P.ID AS PROVEDOR_ID, P.NOME AS PROVEDOR_NOME  from cliente as C, provedor as P WHERE C.CPF = %s', cpfCustomer);
+            connection.query(sql, function (err, result) {
+                if (err) { 
+                    console.log("Ocorreu um erro no commit da transação ");                    
+                }                                                    
+                callback(err, result);
+            });
+
+        });
     },
 
     //
