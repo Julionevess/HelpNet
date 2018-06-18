@@ -22,7 +22,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 
-
 function createOSNumber(providerId){
 
   var dt = dateTime.create();
@@ -35,7 +34,6 @@ function createOSNumber(providerId){
   var s =formatted.substring(17, 19);
 
   return providerId + y + month + d + h + m + s;
-  
 }
 
 app.get('/', (req, res) => {
@@ -78,7 +76,6 @@ app.get('/api/listOSBySituation', (req, res) => {
   });
 });
 
-
 app.post('/api/registerOS', (req, res) => {
   var os = req.body;
   os.number = createOSNumber(os.providerId);
@@ -86,7 +83,6 @@ app.post('/api/registerOS', (req, res) => {
     res.send(JSON.stringify(rows));
   });
 });
-
 
 app.post('/api/associateTechnical', (req, res) => {
   var os = req.body;
@@ -109,9 +105,12 @@ app.post('/api/changeSituationOS', (req, res) => {
 });
 
 
-app.get('/api/user/provider', (req, res) => {
-  console.log("chegou");
+app.get('/api/provider', (req, res) => {
+  
+  console.log("Get Provider");
   var cpfCustomer = req.query.cpfCustomer;
+  console.log("Received: " + cpfCustomer);
+  
   console.log(cpfCustomer);
   connection.getCustomer(cpfCustomer, function (err, rows, fields) {    
     res.send(JSON.stringify(rows));
@@ -120,16 +119,9 @@ app.get('/api/user/provider', (req, res) => {
 
 
 
-
-
-
 /*
 // testar
 */
-
-app.listen(8081, function () {
-  console.log("Server is Up");
-})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -138,9 +130,6 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-
-
 
 
 // catch 404 and forward to error handler
@@ -158,5 +147,9 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.listen(8081, function () {
+  console.log("Server is Up");
+})
 
 module.exports = app;
