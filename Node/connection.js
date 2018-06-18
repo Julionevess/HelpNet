@@ -53,43 +53,22 @@ module.exports = {
 
         var sql = util.format('SELECT * FROM provedor');
         connection.query(sql, function (err, result) { 
-
-            var ret = [];
-            console.log("Result = " + JSON.stringify(result));
-
-            ret = JSON.stringify(result);  
-
-            console.log("ret - > " + ret);
-            console.log("ret[0] - > " + ret[0]);
-            
-            var string = JSON.stringify(result);
-            var result_1 =  JSON.parse(string);
-            console.log("json - > " + result_1[0]);
-            console.log("json - > " + result_1[0].BR_URL);
-
+           
+/*
             var connectionProvider = mysql.createConnection({  
                 host     : result_1.BR_URL,
                 user     : result_1.BD_USUARIO,
                 password : result_1.BD_SENHA,
                 database : result_1.BD_NOME
             });
-   
+   */
             
-            console.log("result.BR_URL = " + result_1.BR_URL);
-            console.log("result.BD_USUARIO = " + result_1.BD_USUARIO);
-            console.log("result.BD_SENHA = " + result_1.BD_SENHA);
-            console.log("result.BD_NOME = " + result_1.BD_NOME);
-
-
-            var sql = util.format('SELECT * FROM cliente WHERE CPF = %s', cpfCustomer);
-            console.log("Sql -> " + sql);
-            connectionProvider.query(sql, function (err, result) {
-                if (err) {
-                    console.log("Problema na conexão com a base do cliente");
-                } else {
-                    ret = JSON.stringify(result);
-                    console.log(ret);
-                }
+            var sql = util.format('select C.ID as CLIENTE_ID, C.NOME AS CLIENTE_NOME, C.CPF AS CLIENTE_CPF, P.ID AS PROVEDOR_ID, P.NOME AS PROVEDOR_NOME  from cliente as C, provedor as P WHERE C.CPF = %s', cpfCustomer);
+            connection.query(sql, function (err, result) {
+                if (err) { 
+                    console.log("Ocorreu um erro no commit da transação ");                    
+                }                                                    
+                callback(err, result);
             });
 
         });

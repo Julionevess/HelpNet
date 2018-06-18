@@ -12,6 +12,8 @@ var usersRouter = require('./routes/users');
 var http = require('http');
 var connection = require('./connection');
 
+var dateTime = require('node-datetime');
+
 var app = express();
 var router = express.Router();
 
@@ -21,48 +23,20 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 
-//app.use(express.json());
-//app.use(express.urlencoded({ extended: false }));
+function createOSNumber(providerId){
 
-/*
-app.use(expressSession({secret: 'minhaChaveSecreta'}));
-app.use(passport.initialize());
-app.use(passport.session());
+  var dt = dateTime.create();
+  var formatted = dt.format('Y-m-d H:M:S');
+  var y = formatted.substring(2, 4);
+  var month = formatted.substring(5, 7);
+  var d = formatted.substring(8, 10);
+  var h = formatted.substring(11, 13);
+  var m = formatted.substring(14, 16);
+  var s =formatted.substring(17, 19);
 
-var os  = {number:'2018051401',  clienteId: 1, problemId: 2, details: 'meu problem é ...'};
-
-var os  = {number:'2018051401',clienteId:1,problemId:2,details:'meu problem é ...',event:{osId:8,technicalId:2,title:'titulo',description:'descrição...'}};
-
-var server = http.createServer(function(req, res) {
-  res.writeHead(200);
-  res.end('Hi everybody!');
-  });
-
-  //server.listen(3000);
+  return providerId + y + month + d + h + m + s;
   
-
-
-
-
-
-connection.associateTechnical(associar, function(err, rows, fields){
-  console.log('3. Leitura executada!', JSON.stringify(rows));
-  });
-
-
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-router.get('/version', function(req, res, next) {
-  res.render('index', { title: 'Version_20180515' });
-});
-
-*/
-
-/*
-// API
-*/
+}
 
 app.get('/', (req, res) => {
   res.send('HelpNet - Webservice alive! Ready to work.');
@@ -106,10 +80,9 @@ app.get('/api/listOSBySituation', (req, res) => {
 
 
 app.post('/api/registerOS', (req, res) => {
-  console.log("iniciou transação");
   var os = req.body;
-  connection.registerOS(os, function (err, rows, fields) {
-    console.log('Lista Carregada.', "ok");
+  os.number = createOSNumber(os.providerId);
+  connection.registerOS(os, function (err, rows, fields) {    
     res.send(JSON.stringify(rows));
   });
 });
