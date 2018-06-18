@@ -109,7 +109,7 @@ app.post('/api/changeSituationOS', (req, res) => {
 });
 
 
-app.get('/api/getCustomer', (req, res) => {
+app.get('/api/user/provider', (req, res) => {
   console.log("chegou");
   var cpfCustomer = req.query.cpfCustomer;
   console.log(cpfCustomer);
