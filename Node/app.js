@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/version', (req, res) => {
-  res.send('Version_20180614_2');
+  res.send('Version_20180618_by_uilton');
 });
 
 app.get('/api/listSituationsOs', (req, res) => {
