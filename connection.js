@@ -248,6 +248,10 @@ module.exports = {
                     }
                 });
             });   
+        },
+        listClients: function listClients(callback) {
+            var sql = util.format('SELECT * FROM CLIENTE');
+            this.runQuery(sql, callback.bind(this));
         },                 
      
     };

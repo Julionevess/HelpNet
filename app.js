@@ -117,6 +117,12 @@ app.get('/api/provider', (req, res) => {
   });
 });
 
+app.get('/api/listClients', (req, res) => {
+  connection.listClients(function (err, rows, fields) {
+    console.log('Lista Carregada.', "ok");
+    res.send(JSON.stringify(rows));
+  });
+});
 
 
 /*
