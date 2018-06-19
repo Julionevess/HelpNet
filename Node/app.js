@@ -117,6 +117,13 @@ app.get('/api/provider', (req, res) => {
   });
 });
 
+// DO NOT USE THIS API, IT'S JUST FOR TEST PURPOSES.
+app.get('/api/listClients', (req, res) => {
+  connection.listClients(function (err, rows, fields) {
+    console.log('Lista Carregada.', "ok");
+    res.send(JSON.stringify(rows));
+  });
+});
 
 
 /*
