@@ -113,7 +113,7 @@ app.get('/api/provider', (req, res) => {
   
   console.log(cpfCustomer);
   connection.getCustomer(cpfCustomer, function (err, rows, fields) {    
-    res.json(JSON.stringify(rows));
+    res.json(rows);
   });
 });
 
