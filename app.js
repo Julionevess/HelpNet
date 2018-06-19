@@ -113,10 +113,11 @@ app.get('/api/provider', (req, res) => {
   
   console.log(cpfCustomer);
   connection.getCustomer(cpfCustomer, function (err, rows, fields) {    
-    res.send(JSON.stringify(rows));
+    res.json(JSON.stringify(rows));
   });
 });
 
+// DO NOT USE THIS API, IT'S JUST FOR TEST PURPOSES.
 app.get('/api/listClients', (req, res) => {
   connection.listClients(function (err, rows, fields) {
     console.log('Lista Carregada.', "ok");
