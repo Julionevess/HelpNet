@@ -10,20 +10,21 @@ var mysql  = require('mysql');
 // });
 
 //HEROKU
+/*
 var connection = mysql.createConnection({  
     host     : 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
     user     : 'wnxoormb91xkfef9',
     password : 'qmwan6b8lamtbp9j',
     database : 's0xdx9gvx8au1ooc'
 });
-
+*/
 //DEV
-// var connection = mysql.createConnection({  
-//     host     : 'localhost',
-//     user     : 'admin',
-//     password : 'h3lpn3ts',
-//     database : 'helpnet'
-// });
+ var connection = mysql.createConnection({  
+     host     : 'localhost',
+     user     : 'admin',
+     password : 'h3lpn3ts',
+     database : 'helpnet'
+ });
 
 module.exports = {
        
@@ -35,7 +36,7 @@ module.exports = {
             if (err) {
                 console.error(sql);
                 throw err;
-            }            
+            }                   
             callback(err, rows, fields);
         });
     },
@@ -52,21 +53,48 @@ module.exports = {
         
 
         var sql = util.format('SELECT * FROM provedor');
-        connection.query(sql, function (err, result) { 
-           
-/*
-            var connectionProvider = mysql.createConnection({  
-                host     : result_1.BR_URL,
-                user     : result_1.BD_USUARIO,
-                password : result_1.BD_SENHA,
-                database : result_1.BD_NOME
-            });
-   */
+        connection.query(sql, function (err, result) {
+            if (err) { 
+                console.log("Ocorreu um erro na consulta do provedor");                    
+            }else{
+
+                var connectionProvider = mysql.createConnection({  
+                    host     : result[0].BD_URL,
+                    user     : result[0].BD_USUARIO,
+                    password : result[0].BD_SENHA,
+                    database : result[0].BD_NOME                    
+                });
+
+                var table = result[0].BD_TABLE    
+                var provider = result[0];
             
-            var sql = util.format('select C.ID as CLIENTE_ID, C.NOME AS CLIENTE_NOME, C.CPF AS CLIENTE_CPF, P.ID AS PROVEDOR_ID, P.NOME AS PROVEDOR_NOME  from cliente as C, provedor as P WHERE C.CPF = %s', cpfCustomer);
+                
+                var sqlProvider = util.format('SELECT * FROM %s WHERE CPF = %s', table, cpfCustomer); 
+                console.log(sqlProvider);           
+                connectionProvider.query(sqlProvider, function (err, result) {
+                    if (err) { 
+                        console.log("Ocorreu um erro na consulta a base do cliente");                    
+                    }else{
+                        //provider.id = provider.ID;
+
+                        var customer = result[0];
+
+                        console.log("provider = " + provider.ID);
+                        console.log("provider = " + provider.NOME);
+                        console.log("customer = " + customer.ID);
+                        console.log("provider = " + customer.NOME);
+            
+                    }                                                                
+                });
+
+            }
+            /*
+            // Este trecho deve ser removido
+            */
+            var sql = util.format('SELECT C.ID as CLIENTE_ID, C.NOME AS CLIENTE_NOME, C.CPF AS CLIENTE_CPF, P.ID AS PROVEDOR_ID, P.NOME AS PROVEDOR_NOME  from cliente as C, provedor as P WHERE C.CPF = %s', cpfCustomer);
             connection.query(sql, function (err, result) {
                 if (err) { 
-                    console.log("Ocorreu um erro no commit da transação ");                    
+                    console.log("Ocorreu um erro na consulta a base do cliente");                    
                 }                                                    
                 callback(err, result);
             });
