@@ -55,8 +55,6 @@ CREATE TABLE `evento` (
 
 /*Data for the table `evento` */
 
-insert  into `evento`(`ID`,`DATA_HORA`,`OS_ID`,`TIPO_EVENTO_ID`,`DESCRICAO`,`TECNICO_ID`) values (1,'2018-06-18 08:13:53',1,1,'primeiro teste completo do evento',1),(2,'2018-06-18 08:15:11',2,1,'primeiro teste completo do evento',1),(3,'2018-06-18 12:26:53',3,1,'primeiro teste completo do evento',1);
-
 /*Table structure for table `os` */
 
 DROP TABLE IF EXISTS `os`;
@@ -88,8 +86,6 @@ CREATE TABLE `os` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `os` */
-
-insert  into `os`(`ID`,`NUMERO`,`DATA_ABERTURA`,`CLIENTE_ID`,`PROBLEMA_ID`,`OUTRO_PROBLEMA`,`DETALHES`,`OBSERVACAO`,`CLIENTE_NAO_CADASTRADO`,`TECNICO_ID`,`SITUACAO_ID`,`PROVEDOR_ID`) values (1,120810000,'2018-06-18 08:13:53',1,1,NULL,'primeiro teste completo da criação da OS',NULL,NULL,NULL,1,1),(2,120810000,'2018-06-18 08:15:11',1,1,NULL,'primeiro teste completo da criação da OS',NULL,NULL,NULL,1,1),(3,1180618122652,'2018-06-18 12:26:52',1,1,NULL,'primeiro teste completo da criação da OS',NULL,NULL,NULL,1,1);
 
 /*Table structure for table `perfil` */
 
@@ -133,12 +129,13 @@ CREATE TABLE `provedor` (
   `BD_PORTA` varchar(10) default NULL,
   `BD_USUARIO` varchar(100) default NULL,
   `BD_SENHA` varchar(100) default NULL,
+  `BD_TABLE` varchar(50) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 /*Data for the table `provedor` */
 
-insert  into `provedor`(`ID`,`NOME`,`DESCRICAO`,`SITUACAO`,`BD_NOME`,`BD_URL`,`BD_PORTA`,`BD_USUARIO`,`BD_SENHA`) values (1,'HOF','Homar Net','A','PROVEDOR','LOCALHOST','3306','ADMIN','ADMIN');
+insert  into `provedor`(`ID`,`NOME`,`DESCRICAO`,`SITUACAO`,`BD_NOME`,`BD_URL`,`BD_PORTA`,`BD_USUARIO`,`BD_SENHA`,`BD_TABLE`) values (1,'HOF','Homar Net','A','PROVEDOR','LOCALHOST','3306','ADMIN','ADMIN','cliente');
 
 /*Table structure for table `situacao_os` */
 
