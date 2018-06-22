@@ -21,8 +21,8 @@ var connection = mysql.createConnection({
 //DEV
  var connection = mysql.createConnection({  
      host     : 'localhost',
-     user     : 'admin',
-     password : 'h3lpn3ts',
+     user     : 'root',
+     password : 'root',
      database : 'helpnet'
  });
 
@@ -67,13 +67,21 @@ module.exports = {
 
                 var table = result[0].BD_TABLE    
                 var provider = result[0];
+
+                console.log("BD_URL = " + result[0].BD_URL);
+                console.log("BD_USUARIO = " + result[0].BD_USUARIO);
+                console.log("BD_SENHA = " + result[0].BD_SENHA);
+                console.log("BD_NOME = " + result[0].BD_NOME);
             
                 
                 var sqlProvider = util.format('SELECT * FROM %s WHERE CPF = %s', table, cpfCustomer); 
                 console.log(sqlProvider);           
                 connectionProvider.query(sqlProvider, function (err, result) {
+                   
                     if (err) { 
-                        console.log("Ocorreu um erro na consulta a base do cliente");                    
+                        console.log("Ocorreu um erro na consulta a base do cliente"); 
+                        console.log(err);  
+                        callback(err, result);                
                     }else{
                         //provider.id = provider.ID;
 
@@ -83,6 +91,12 @@ module.exports = {
                         console.log("provider = " + provider.NOME);
                         console.log("customer = " + customer.ID);
                         console.log("provider = " + customer.NOME);
+
+                        var finalResult = new Object();
+                        finalResult.provider = provider;
+                        finalResult.customer = customer;
+
+                        callback(err, finalResult);
             
                     }                                                                
                 });
@@ -90,7 +104,7 @@ module.exports = {
             }
             /*
             // Este trecho deve ser removido
-            */
+           
             var sql = util.format('SELECT C.ID as CLIENTE_ID, C.NOME AS CLIENTE_NOME, C.CPF AS CLIENTE_CPF, P.ID AS PROVEDOR_ID, P.NOME AS PROVEDOR_NOME  from cliente as C, provedor as P WHERE C.CPF = %s', cpfCustomer);
             connection.query(sql, function (err, result) {
                 if (err) { 
@@ -98,7 +112,7 @@ module.exports = {
                 }                                                    
                 callback(err, result);
             });
-
+ */
         });
     },
 
@@ -146,11 +160,12 @@ module.exports = {
                         throw err;
                     });
                 } else {
-                    var event = os.event;
+                    var event = new Object();
                     console.log(result);
                     event.osId = result.insertId;
+                    event.tipoEventID = 1
                     console.log("A OS foi registrada com o ID = " + event.osId);
-                    sql = util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID, DESCRICAO, TECNICO_ID) VALUES (NOW(), %s, \'%s\',\'%s\', %s)', event.osId, event.tipoEventID, event.description, event.technicalId)
+                    sql = util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID) VALUES (NOW(), %s, %s)', event.osId, event.tipoEventID)
                     connection.query(sql, function (err, result) {
                         if (err) {
                             console.log("Fazendo roolback - Problema na persistência do Evento");
@@ -167,7 +182,7 @@ module.exports = {
                                 });
                             }
                             console.log('Transação completa.');                                                     
-                            callback(err, event.osId, fields);
+                            callback(err, os.number, fields);
                         });                        
                     });     
                 }
