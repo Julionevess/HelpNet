@@ -72,13 +72,18 @@ module.exports = {
             
             var customer = new Object();
             if (typeof rows[0] !== 'undefined'){
+                console.log("O cliente foi localizado na base do Helpnet");
                 var customer = rows[0];
             }else{
+                console.log("O cliente não foi localizado na base do Helpnet, será feita uma busca por todos os provedores");
                 customer.CPF = cpfCustomer;
             }
 
-            console.log("após pegar o customer local = " + JSON.stringify(customer))
-            var sql = util.format('SELECT * FROM provedor');
+           if (typeof customer.PROVIDER_ID !== 'undefined'){
+               var sql = util.format('SELECT * FROM provedor WHERE ID = %d', customer.PROVIDER_ID);
+           }else{
+               var sql = util.format('SELECT * FROM provedor');
+           }
             connection.query(sql, function (err, result) {
                 if (err) { 
                     console.log("Ocorreu um erro na consulta do provedor");                    
@@ -98,7 +103,6 @@ module.exports = {
                                 // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet
                                 callback(err, customer); 
                             }else{
-                                console.log("O customer final = " + JSON.stringify(rows));
                                 
                                 if (rows.customer !== customer){
                                     // Aqui deve entrar uma chamada de atualização da tabela do Helpnet 
