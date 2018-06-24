@@ -128,6 +128,7 @@ module.exports = {
 
                 var table = provider.BD_TABLE  
                 var columnIdentify = provider.BD_COLUMN_IDENTIFY
+                var select = provider.BD_SELECT
                 var connectionProvider = mysql.createConnection({  
                     host     : provider.BD_URL,
                     user     : provider.BD_USUARIO,
@@ -135,7 +136,7 @@ module.exports = {
                     database : provider.BD_NOME                    
                 });
         
-                var sqlProvider = util.format('SELECT * FROM %s WHERE %s =%s', table, columnIdentify, cpfCustomer);
+                var sqlProvider = util.format('%s FROM %s WHERE %s =%s', select, table, columnIdentify, cpfCustomer);
                 console.log(sqlProvider);                                
                 connectionProvider.query(sqlProvider, function (err, result) {
                 
