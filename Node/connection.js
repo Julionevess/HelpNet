@@ -127,6 +127,7 @@ module.exports = {
                 var cpfCustomer = customerParam.CPF;
 
                 var table = provider.BD_TABLE  
+                var columnIdentify = provider.BD_COLUMN_IDENTIFY
                 var connectionProvider = mysql.createConnection({  
                     host     : provider.BD_URL,
                     user     : provider.BD_USUARIO,
@@ -134,7 +135,8 @@ module.exports = {
                     database : provider.BD_NOME                    
                 });
         
-                var sqlProvider = util.format('SELECT * FROM %s WHERE CPF = %s', table, cpfCustomer);                                  
+                var sqlProvider = util.format('SELECT * FROM %s WHERE %s =%s', table, columnIdentify, cpfCustomer);
+                console.log(sqlProvider);                                
                 connectionProvider.query(sqlProvider, function (err, result) {
                 
                     if (err) { 
