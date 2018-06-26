@@ -203,7 +203,7 @@ module.exports = {
                 console.log("Erro. Não foi possível iniciar transação..");
                 throw err;
             }
-            var sql = util.format('INSERT INTO OS (NUMERO, DATA_ABERTURA, CLIENTE_ID, PROBLEMA_ID, DETALHES, SITUACAO_ID, PROVEDOR_ID) VALUES (%s, NOW(), %s, %s, \'%s\', 1, %s)', os.number, os.clienteId, os.problemId, os.details, os.providerId);
+            var sql = util.format('INSERT INTO OS (NUMERO, DATA_ABERTURA, CLIENTE_ID, PROBLEMA_ID, DETALHES, SITUACAO_ID, PROVEDOR_ID) VALUES (%s, NOW(), %s, %s, %s, 1, %s)', os.number, os.clienteId, os.problemId, os.details, os.providerId);
             connection.query(sql, function (err, result) {
 
                 if (err) {
