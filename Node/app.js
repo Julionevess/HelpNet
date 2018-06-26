@@ -111,7 +111,6 @@ app.get('/api/provider', (req, res) => {
   var cpfCustomer = req.query.cpfCustomer;
   console.log("Received: " + cpfCustomer);
   
-  console.log(cpfCustomer);
   connection.getCustomer(cpfCustomer, function (err, rows, fields) {    
     res.json(JSON.stringify(rows));
   });

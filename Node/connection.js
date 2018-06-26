@@ -10,20 +10,21 @@ var mysql  = require('mysql');
 // });
 
 //HEROKU
+/*
 var connection = mysql.createConnection({  
     host     : 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
     user     : 'wnxoormb91xkfef9',
     password : 'qmwan6b8lamtbp9j',
     database : 's0xdx9gvx8au1ooc'
 });
-
+*/
 //DEV
-// var connection = mysql.createConnection({  
-//     host     : 'localhost',
-//     user     : 'admin',
-//     password : 'h3lpn3ts',
-//     database : 'helpnet'
-// });
+ var connection = mysql.createConnection({  
+     host     : 'localhost',
+     user     : 'root',
+     password : 'root',
+     database : 'helpnet'
+ });
 
 module.exports = {
        
@@ -35,7 +36,7 @@ module.exports = {
             if (err) {
                 console.error(sql);
                 throw err;
-            }            
+            }                   
             callback(err, rows, fields);
         });
     },
@@ -48,29 +49,122 @@ module.exports = {
         this.runQuery(sql, callback.bind(this));
     },
 
+    //
+    // Localiza o cliente na base do Helpnet 
+    //
+    getLocalCustomer: function getLocalCustomer(cpfCustomer, callback){
+        var sql = util.format('SELECT * FROM cliente WHERE CPF = %s', cpfCustomer);
+        connection.query(sql, function (err, result) {
+            if (err) { 
+                console.log("Ocorreu um erro na consulta ao cliente"); 
+                console.log(err);
+            }            
+            callback(err, result);
+            });
+    },
+
+    //
+    // Recuper as informações atulizadas do cliente e do Provedor que o cliente está cadastrado
+    //
     getCustomer: function getCustomer(cpfCustomer, callback) { 
         
-
-        var sql = util.format('SELECT * FROM provedor');
-        connection.query(sql, function (err, result) { 
-           
-/*
-            var connectionProvider = mysql.createConnection({  
-                host     : result_1.BR_URL,
-                user     : result_1.BD_USUARIO,
-                password : result_1.BD_SENHA,
-                database : result_1.BD_NOME
-            });
-   */
+        this.getLocalCustomer(cpfCustomer, function (err, rows, fields) {            
             
-            var sql = util.format('select C.ID as CLIENTE_ID, C.NOME AS CLIENTE_NOME, C.CPF AS CLIENTE_CPF, P.ID AS PROVEDOR_ID, P.NOME AS PROVEDOR_NOME  from cliente as C, provedor as P WHERE C.CPF = %s', cpfCustomer);
+            var customer = new Object();
+            if (typeof rows[0] !== 'undefined'){
+                console.log("O cliente foi localizado na base do Helpnet");
+                var customer = rows[0];
+            }else{
+                console.log("O cliente não foi localizado na base do Helpnet, será feita uma busca por todos os provedores");
+                customer.CPF = cpfCustomer;
+            }
+
+           if (typeof customer.PROVIDER_ID !== 'undefined'){
+               var sql = util.format('SELECT * FROM provedor WHERE ID = %d', customer.PROVIDER_ID);
+           }else{
+               var sql = util.format('SELECT * FROM provedor');
+           }
             connection.query(sql, function (err, result) {
                 if (err) { 
-                    console.log("Ocorreu um erro no commit da transação ");                    
-                }                                                    
-                callback(err, result);
+                    console.log("Ocorreu um erro na consulta do provedor");                    
+                }else{                      
+                    
+                    if (typeof result !== undefined){
+                        
+                        var totalInteration = result.length;
+                        var interation = 0;
+                        var providers = result;
+                        /*
+                        //Consulta a base do primeiro provedor para buscar as informações do cliente, quando não encontra,
+                        // entra em loop buscando nos outros provedores, até encontrar ou percorrer todos os provedores
+                        */
+                        getProviderCustomer(interation, totalInteration, providers, customer, function (err, rows, fields) {
+                            if (err){
+                                // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet                                 
+                            }else{                                                         
+                                if (rows.customer !== customer){
+                                    // Aqui deve entrar uma chamada de atualização da tabela do Helpnet 
+
+                                    console.log("Foi identificado divergencias nos dados dos cliente");
+                                }
+                                
+                            }            
+                            interation++;
+                            if(totalInteration > interation){
+                                getProviderCustomer(interation, totalInteration, providers, customer, function (err, rows, fields) {
+                                    callback(err, rows);
+                                });
+                            }else{
+                                if (typeof customer.ID == 'undefined'){
+                                    callback(err, "Customer not found");   
+                                }else{
+                                    callback(err, rows);   
+                                }
+                            }    
+                        });                        
+                    }else{
+                        callback(err, "No provider found");
+                    }
+                }                    
             });
 
+            /*
+            //Consulta do cliente na base do Provedor
+            */
+            getProviderCustomer: function getProviderCustomer(interation, totalInteration, providers, customerParam, callback){
+                   
+                var provider = providers[interation];
+                var cpfCustomer = customerParam.CPF;
+
+                var table = provider.BD_TABLE  
+                var columnIdentify = provider.BD_COLUMN_IDENTIFY
+                var select = provider.BD_SELECT
+                var connectionProvider = mysql.createConnection({  
+                    host     : provider.BD_URL,
+                    user     : provider.BD_USUARIO,
+                    password : provider.BD_SENHA,
+                    database : provider.BD_NOME                    
+                });
+        
+                var sqlProvider = util.format('%s FROM %s WHERE %s =%s', select, table, columnIdentify, cpfCustomer);
+                console.log(sqlProvider);                                
+                connectionProvider.query(sqlProvider, function (err, result) {
+                
+                    if (err) { 
+                        console.log("Ocorreu um erro na consulta a base do provedor"); 
+                        console.log(err);
+                        callback(err, rows);                 
+                    }else{
+                        var customer = result[0];
+                        if (typeof customer !== 'undefined'){
+                            var finalResult = new Object();
+                            finalResult.provider = provider;
+                            finalResult.customer = customer;
+                            callback(err, finalResult);                            
+                        }
+                    }                            
+                });                
+            }
         });
     },
 
@@ -118,11 +212,12 @@ module.exports = {
                         throw err;
                     });
                 } else {
-                    var event = os.event;
+                    var event = new Object();
                     console.log(result);
                     event.osId = result.insertId;
+                    event.tipoEventID = 1
                     console.log("A OS foi registrada com o ID = " + event.osId);
-                    sql = util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID, DESCRICAO, TECNICO_ID) VALUES (NOW(), %s, \'%s\',\'%s\', %s)', event.osId, event.tipoEventID, event.description, event.technicalId)
+                    sql = util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID) VALUES (NOW(), %s, %s)', event.osId, event.tipoEventID)
                     connection.query(sql, function (err, result) {
                         if (err) {
                             console.log("Fazendo roolback - Problema na persistência do Evento");
@@ -139,7 +234,7 @@ module.exports = {
                                 });
                             }
                             console.log('Transação completa.');                                                     
-                            callback(err, event.osId, fields);
+                            callback(err, os.number, fields);
                         });                        
                     });     
                 }

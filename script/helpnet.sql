@@ -1,6 +1,6 @@
 /*
 SQLyog Community Edition- MySQL GUI v6.15
-MySQL - 5.0.51b-community-nt : Database - helpnet
+MySQL - 5.1.44-community : Database - helpnet
 *********************************************************************
 */
 
@@ -20,61 +20,60 @@ USE `helpnet`;
 DROP TABLE IF EXISTS `cliente`;
 
 CREATE TABLE `cliente` (
-  `ID` bigint(20) NOT NULL auto_increment,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NOME` varchar(100) NOT NULL,
   `CPF` varchar(11) NOT NULL,
   `USUARIO_ID` bigint(20) NOT NULL,
-  PRIMARY KEY  (`ID`),
+  `PROVIDER_ID` bigint(20) NOT NULL,
+  PRIMARY KEY (`ID`),
   KEY `FK_USUARIO` (`USUARIO_ID`),
   CONSTRAINT `FK_USUARIO` FOREIGN KEY (`USUARIO_ID`) REFERENCES `usuario` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `cliente` */
 
-insert  into `cliente`(`ID`,`NOME`,`CPF`,`USUARIO_ID`) values (1,'Jose','01234567890',3),(2,'Maria','11111111111',1),(3,'Silva','22222222222',2);
+insert  into `cliente`(`ID`,`NOME`,`CPF`,`USUARIO_ID`,`PROVIDER_ID`) values (1,'Jose','01234567890',3,1),(2,'Maria','11111111111',1,1),(3,'Silva','22222222222',2,1);
 
 /*Table structure for table `evento` */
 
 DROP TABLE IF EXISTS `evento`;
 
 CREATE TABLE `evento` (
-  `ID` bigint(20) NOT NULL auto_increment,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `DATA_HORA` datetime NOT NULL,
   `OS_ID` bigint(20) NOT NULL,
   `TIPO_EVENTO_ID` bigint(20) NOT NULL,
-  `DESCRICAO` varchar(255) default NULL,
-  `TECNICO_ID` bigint(20) NOT NULL,
-  PRIMARY KEY  (`ID`),
+  `OBSERVACAO` varchar(255) DEFAULT NULL,
+  `TECNICO_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
   KEY `FK_OS_ID` (`OS_ID`),
   KEY `FK_TIPO_EVENTO_ID` (`TIPO_EVENTO_ID`),
   KEY `FK_TECNICO` (`TECNICO_ID`),
   CONSTRAINT `FK_OS_ID` FOREIGN KEY (`OS_ID`) REFERENCES `os` (`ID`),
   CONSTRAINT `FK_TECNICO` FOREIGN KEY (`TECNICO_ID`) REFERENCES `tecnico` (`ID`),
   CONSTRAINT `FK_TIPO_EVENTO_ID` FOREIGN KEY (`TIPO_EVENTO_ID`) REFERENCES `tipo_evento` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 /*Data for the table `evento` */
-
-insert  into `evento`(`ID`,`DATA_HORA`,`OS_ID`,`TIPO_EVENTO_ID`,`DESCRICAO`,`TECNICO_ID`) values (1,'2018-06-18 08:13:53',1,1,'primeiro teste completo do evento',1),(2,'2018-06-18 08:15:11',2,1,'primeiro teste completo do evento',1),(3,'2018-06-18 12:26:53',3,1,'primeiro teste completo do evento',1);
 
 /*Table structure for table `os` */
 
 DROP TABLE IF EXISTS `os`;
 
 CREATE TABLE `os` (
-  `ID` bigint(20) NOT NULL auto_increment,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NUMERO` bigint(20) NOT NULL,
   `DATA_ABERTURA` datetime NOT NULL,
   `CLIENTE_ID` bigint(20) NOT NULL,
-  `PROBLEMA_ID` bigint(20) default NULL,
-  `OUTRO_PROBLEMA` varchar(255) default NULL,
-  `DETALHES` varchar(255) default NULL,
-  `OBSERVACAO` varchar(255) default NULL,
-  `CLIENTE_NAO_CADASTRADO` varchar(255) default NULL,
-  `TECNICO_ID` bigint(20) default NULL,
+  `PROBLEMA_ID` bigint(20) DEFAULT NULL,
+  `OUTRO_PROBLEMA` varchar(255) DEFAULT NULL,
+  `DETALHES` varchar(255) DEFAULT NULL,
+  `OBSERVACAO` varchar(255) DEFAULT NULL,
+  `CLIENTE_NAO_CADASTRADO` varchar(255) DEFAULT NULL,
+  `TECNICO_ID` bigint(20) DEFAULT NULL,
   `SITUACAO_ID` bigint(20) NOT NULL,
   `PROVEDOR_ID` bigint(20) NOT NULL,
-  PRIMARY KEY  (`ID`),
+  PRIMARY KEY (`ID`),
   KEY `FK_PROVEDOR_ID` (`PROVEDOR_ID`),
   KEY `FK_SITUACAO_ID` (`SITUACAO_ID`),
   KEY `FK_TECNICO_ID` (`TECNICO_ID`),
@@ -85,21 +84,19 @@ CREATE TABLE `os` (
   CONSTRAINT `FK_PROVEDOR_ID` FOREIGN KEY (`PROVEDOR_ID`) REFERENCES `provedor` (`ID`),
   CONSTRAINT `FK_SITUACAO_ID` FOREIGN KEY (`SITUACAO_ID`) REFERENCES `situacao_os` (`ID`),
   CONSTRAINT `FK_TECNICO_ID` FOREIGN KEY (`TECNICO_ID`) REFERENCES `tecnico` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 /*Data for the table `os` */
-
-insert  into `os`(`ID`,`NUMERO`,`DATA_ABERTURA`,`CLIENTE_ID`,`PROBLEMA_ID`,`OUTRO_PROBLEMA`,`DETALHES`,`OBSERVACAO`,`CLIENTE_NAO_CADASTRADO`,`TECNICO_ID`,`SITUACAO_ID`,`PROVEDOR_ID`) values (1,120810000,'2018-06-18 08:13:53',1,1,NULL,'primeiro teste completo da criação da OS',NULL,NULL,NULL,1,1),(2,120810000,'2018-06-18 08:15:11',1,1,NULL,'primeiro teste completo da criação da OS',NULL,NULL,NULL,1,1),(3,1180618122652,'2018-06-18 12:26:52',1,1,NULL,'primeiro teste completo da criação da OS',NULL,NULL,NULL,1,1);
 
 /*Table structure for table `perfil` */
 
 DROP TABLE IF EXISTS `perfil`;
 
 CREATE TABLE `perfil` (
-  `ID` bigint(20) NOT NULL auto_increment,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NOME` varchar(50) NOT NULL,
   `DESCRICAO` varchar(50) NOT NULL,
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `perfil` */
@@ -109,10 +106,10 @@ CREATE TABLE `perfil` (
 DROP TABLE IF EXISTS `problema_os`;
 
 CREATE TABLE `problema_os` (
-  `ID` bigint(20) NOT NULL auto_increment,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `TITULO` varchar(100) NOT NULL,
   `DESCRICAO` varchar(255) NOT NULL,
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 /*Data for the table `problema_os` */
@@ -124,30 +121,33 @@ insert  into `problema_os`(`ID`,`TITULO`,`DESCRICAO`) values (1,'Sem internet','
 DROP TABLE IF EXISTS `provedor`;
 
 CREATE TABLE `provedor` (
-  `ID` bigint(20) NOT NULL auto_increment,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NOME` varchar(50) NOT NULL,
   `DESCRICAO` varchar(255) NOT NULL,
   `SITUACAO` char(1) NOT NULL,
-  `BD_NOME` varchar(100) default NULL,
-  `BD_URL` varchar(100) default NULL,
-  `BD_PORTA` varchar(10) default NULL,
-  `BD_USUARIO` varchar(100) default NULL,
-  `BD_SENHA` varchar(100) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  `BD_NOME` varchar(100) DEFAULT NULL,
+  `BD_URL` varchar(100) DEFAULT NULL,
+  `BD_PORTA` varchar(10) DEFAULT NULL,
+  `BD_USUARIO` varchar(100) DEFAULT NULL,
+  `BD_SENHA` varchar(100) DEFAULT NULL,
+  `BD_TABLE` varchar(50) DEFAULT NULL,
+  `BD_COLUMN_IDENTIFY` varchar(100) DEFAULT NULL,
+  `BD_SELECT` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `provedor` */
 
-insert  into `provedor`(`ID`,`NOME`,`DESCRICAO`,`SITUACAO`,`BD_NOME`,`BD_URL`,`BD_PORTA`,`BD_USUARIO`,`BD_SENHA`) values (1,'HOF','Homar Net','A','PROVEDOR','LOCALHOST','3306','ADMIN','ADMIN');
+insert  into `provedor`(`ID`,`NOME`,`DESCRICAO`,`SITUACAO`,`BD_NOME`,`BD_URL`,`BD_PORTA`,`BD_USUARIO`,`BD_SENHA`,`BD_TABLE`,`BD_COLUMN_IDENTIFY`,`BD_SELECT`) values (1,'HOF','Homar Net','A','mkradius','45.234.10.2','3306','helpnet','h3lpn3ts','sis_cliente','cpf_cnpj','SELECT nome, nome_res, fone, celular, login, email, endereco, numero, bairro, cidade, estado, cep, bloqueado, cli_ativado'),(2,'JNS','Julio Prov','A','provider_jns','LOCALHOST','3306','admin','admin','cliente','cpf','SELECT *');
 
 /*Table structure for table `situacao_os` */
 
 DROP TABLE IF EXISTS `situacao_os`;
 
 CREATE TABLE `situacao_os` (
-  `ID` bigint(20) NOT NULL auto_increment,
-  `SITUACAO` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `SITUACAO` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `situacao_os` */
@@ -159,11 +159,11 @@ insert  into `situacao_os`(`ID`,`SITUACAO`) values (1,'Aberta'),(2,'Em análise'
 DROP TABLE IF EXISTS `tecnico`;
 
 CREATE TABLE `tecnico` (
-  `ID` bigint(20) NOT NULL auto_increment,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NOME` varchar(100) NOT NULL,
   `CPF` varchar(11) NOT NULL,
   `USUARIO_ID` bigint(20) NOT NULL,
-  PRIMARY KEY  (`ID`),
+  PRIMARY KEY (`ID`),
   KEY `FK_USUARIO_ID` (`USUARIO_ID`),
   CONSTRAINT `FK_USUARIO_ID` FOREIGN KEY (`USUARIO_ID`) REFERENCES `usuario` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
@@ -177,10 +177,10 @@ insert  into `tecnico`(`ID`,`NOME`,`CPF`,`USUARIO_ID`) values (1,'Homar','222222
 DROP TABLE IF EXISTS `tipo_evento`;
 
 CREATE TABLE `tipo_evento` (
-  `ID` bigint(20) NOT NULL auto_increment,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `EVENTO` varchar(100) NOT NULL,
   `DESCRICAO` varchar(255) NOT NULL,
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 /*Data for the table `tipo_evento` */
@@ -192,12 +192,12 @@ insert  into `tipo_evento`(`ID`,`EVENTO`,`DESCRICAO`) values (1,'Abrir OS','Aber
 DROP TABLE IF EXISTS `usuario`;
 
 CREATE TABLE `usuario` (
-  `ID` bigint(20) NOT NULL auto_increment,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `LOGIN` varchar(50) NOT NULL,
   `SENHA` varchar(50) NOT NULL,
   `PERFIL` varchar(50) NOT NULL,
   `NOME` varchar(50) NOT NULL,
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `usuario` */
