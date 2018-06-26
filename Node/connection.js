@@ -100,17 +100,27 @@ module.exports = {
                         */
                         getProviderCustomer(interation, totalInteration, providers, customer, function (err, rows, fields) {
                             if (err){
-                                // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet
-                                callback(err, customer); 
-                            }else{
-                                
+                                // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet                                 
+                            }else{                                                         
                                 if (rows.customer !== customer){
                                     // Aqui deve entrar uma chamada de atualização da tabela do Helpnet 
+
                                     console.log("Foi identificado divergencias nos dados dos cliente");
                                 }
                                 
-                                callback(err, rows);                      
-                            }
+                            }            
+                            interation++;
+                            if(totalInteration > interation){
+                                getProviderCustomer(interation, totalInteration, providers, customer, function (err, rows, fields) {
+                                    callback(err, rows);
+                                });
+                            }else{
+                                if (typeof customer.ID == 'undefined'){
+                                    callback(err, "Customer not found");   
+                                }else{
+                                    callback(err, rows);   
+                                }
+                            }    
                         });                        
                     }else{
                         callback(err, "No provider found");
@@ -141,9 +151,9 @@ module.exports = {
                 connectionProvider.query(sqlProvider, function (err, result) {
                 
                     if (err) { 
-                        console.log("Ocorreu um erro na consulta a base do cliente"); 
-                        console.log(err);  
-                        callback(err, result);                
+                        console.log("Ocorreu um erro na consulta a base do provedor"); 
+                        console.log(err);
+                        callback(err, rows);                 
                     }else{
                         var customer = result[0];
                         if (typeof customer !== 'undefined'){
@@ -151,17 +161,8 @@ module.exports = {
                             finalResult.provider = provider;
                             finalResult.customer = customer;
                             callback(err, finalResult);                            
-                        }else{ 
-                            interation++;
-                            if(totalInteration > interation){
-                                getProviderCustomer(interation, totalInteration, providers, customerParam, function (err, rows, fields) {
-                                    callback(err, rows);
-                                });
-                            }else{
-                                callback(err, "Customer not found");   
-                            }
                         }
-                    }                                                                
+                    }                            
                 });                
             }
         });
