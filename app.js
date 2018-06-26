@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/version', (req, res) => {
-  res.send('Version_20180618_by_uilton');
+  res.send('Version_20180626_by_uilton');
 });
 
 app.get('/api/listSituationsOs', (req, res) => {
@@ -111,9 +111,8 @@ app.get('/api/provider', (req, res) => {
   var cpfCustomer = req.query.cpfCustomer;
   console.log("Received: " + cpfCustomer);
   
-  console.log(cpfCustomer);
   connection.getCustomer(cpfCustomer, function (err, rows, fields) {    
-    res.json(rows);
+    res.json(JSON.stringify(rows));
   });
 });
 
