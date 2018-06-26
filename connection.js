@@ -10,21 +10,21 @@ var mysql  = require('mysql');
 // });
 
 //HEROKU
-/*
+
 var connection = mysql.createConnection({  
     host     : 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
     user     : 'wnxoormb91xkfef9',
     password : 'qmwan6b8lamtbp9j',
     database : 's0xdx9gvx8au1ooc'
 });
-*/
+
 //DEV
- var connection = mysql.createConnection({  
-     host     : 'localhost',
-     user     : 'root',
-     password : 'root',
-     database : 'helpnet'
- });
+//  var connection = mysql.createConnection({  
+//      host     : 'localhost',
+//      user     : 'root',
+//      password : 'root',
+//      database : 'helpnet'
+//  });
 
 module.exports = {
        
