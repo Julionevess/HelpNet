@@ -100,9 +100,7 @@ app.post('/api/changeSituationOS', (req, res) => {
   var object = req.body;
   connection.changeSituationOS(object, function (err, rows, fields) {
     console.log('Técnico associado', JSON.stringify(rows));
-    const resultStr = JSON.stringify(rows);
-    console.log(resultStr);
-    res.send(resultStr);
+    res.send(JSON.stringify(rows));
   });
 });
 
@@ -114,7 +112,9 @@ app.get('/api/provider', (req, res) => {
   console.log("Received: " + cpfCustomer);
   
   connection.getCustomer(cpfCustomer, function (err, rows, fields) {    
-    res.json(JSON.stringify(rows));
+    console.log("Printing result customer........");
+    const resultStr = JSON.stringify(rows);
+    console.log(resultStr);
   });
 });
 
