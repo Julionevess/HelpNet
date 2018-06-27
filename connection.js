@@ -1,4 +1,4 @@
-var Util = require('util');
+var util = require('util');
 var mysql = require('mysql');
 
 //AWS
@@ -10,21 +10,21 @@ var mysql = require('mysql');
 // });
 
 //HEROKU
-
-var connection = mysql.createConnection({
-    host: 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-    user: 'wnxoormb91xkfef9',
-    password: 'qmwan6b8lamtbp9j',
-    database: 's0xdx9gvx8au1ooc'
+/*
+var connection = mysql.createConnection({  
+    host     : 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+    user     : 'wnxoormb91xkfef9',
+    password : 'qmwan6b8lamtbp9j',
+    database : 's0xdx9gvx8au1ooc'
 });
-
+*/
 //DEV
-//  var connection = mysql.createConnection({  
-//      host     : 'localhost',
-//      user     : 'root',
-//      password : 'root',
-//      database : 'helpnet'
-//  });
+var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'helpnet'
+});
 
 module.exports = {
 
@@ -45,7 +45,7 @@ module.exports = {
     // Listar todas as situações possiveis para uma OS 
     //
     listSituations: function listSituations(callback) {
-        var sql = Util.format('SELECT * FROM SITUACAO_OS');
+        var sql = util.format('SELECT * FROM SITUACAO_OS');
         this.runQuery(sql, callback.bind(this));
     },
 
@@ -53,7 +53,7 @@ module.exports = {
     // Localiza o cliente na base do Helpnet 
     //
     getLocalCustomer: function getLocalCustomer(cpfCustomer, callback) {
-        var sql = Util.format('SELECT * FROM cliente WHERE CPF = %s', cpfCustomer);
+        var sql = util.format('SELECT * FROM cliente WHERE CPF = %s', cpfCustomer);
         connection.query(sql, function (err, result) {
             if (err) {
                 console.log("Ocorreu um erro na consulta ao cliente");
@@ -80,9 +80,9 @@ module.exports = {
             }
 
             if (typeof customer.PROVIDER_ID !== 'undefined') {
-                var sql = Util.format('SELECT * FROM provedor WHERE ID = %d', customer.PROVIDER_ID);
+                var sql = util.format('SELECT * FROM provedor WHERE ID = %d', customer.PROVIDER_ID);
             } else {
-                var sql = Util.format('SELECT * FROM provedor');
+                var sql = util.format('SELECT * FROM provedor');
             }
             connection.query(sql, function (err, result) {
                 if (err) {
@@ -146,7 +146,7 @@ module.exports = {
                     database: provider.BD_NOME
                 });
 
-                var sqlProvider = Util.format('%s FROM %s WHERE %s =%s', select, table, columnIdentify, cpfCustomer);
+                var sqlProvider = util.format('%s FROM %s WHERE %s =%s', select, table, columnIdentify, cpfCustomer);
                 console.log(sqlProvider);
                 connectionProvider.query(sqlProvider, function (err, result) {
 
@@ -172,7 +172,7 @@ module.exports = {
     // Listar todas os problemas conhecidos que podem motivar uma abertura de OS 
     //
     listProblems: function listProblems(callback) {
-        var sql = Util.format('SELECT * FROM PROBLEMA_OS');
+        var sql = util.format('SELECT * FROM PROBLEMA_OS');
         this.runQuery(sql, callback.bind(this));
     },
 
@@ -180,7 +180,7 @@ module.exports = {
     // Listar todas as OS de um determinado provedor
     //
     listOS: function listOS(providerId, callback) {
-        var sql = Util.format('SELECT * FROM OS WHERE PROVEDOR_ID = %d', providerId);
+        var sql = util.format('SELECT * FROM OS WHERE PROVEDOR_ID = %d', providerId);
         this.runQuery(sql, callback.bind(this));
     },
 
@@ -188,7 +188,7 @@ module.exports = {
     // Listar as OS de um determinado provedor, filtrnado pela situação 
     //
     listOSBySituation: function listOSBySituation(providerId, situationId, callback) {
-        var sql = Util.format('SELECT * FROM OS WHERE PROVEDOR_ID = %d AND SITUACAO_ID = %d', providerId, situationId);
+        var sql = util.format('SELECT * FROM OS WHERE PROVEDOR_ID = %d AND SITUACAO_ID = %d', providerId, situationId);
         this.runQuery(sql, callback.bind(this));
     },
 
@@ -203,12 +203,7 @@ module.exports = {
                 console.log("Erro. Não foi possível iniciar transação..");
                 throw err;
             }
-            console.log("Number: " + os.number);
-            console.log("clienteId: " + os.clienteId);
-            console.log("problemId: " + os.problemId);
-            console.log("details: " + os.details);
-            console.log("providerId: " + os.providerId);
-            var sql = Util.format('INSERT INTO OS (NUMERO, DATA_ABERTURA, CLIENTE_ID, PROBLEMA_ID, DETALHES, SITUACAO_ID, PROVEDOR_ID) VALUES (%s, NOW(), %s, %s, %s, 1, %s)', os.number, os.clienteId, os.problemId, os.details, os.providerId);
+            var sql = util.format('INSERT INTO OS (NUMERO, DATA_ABERTURA, CLIENTE_ID, PROBLEMA_ID, DETALHES, SITUACAO_ID, PROVEDOR_ID) VALUES (%s, NOW(), %s, %s, \'%s\', 1, %s)', os.number, os.clienteId, os.problemId, os.details, os.providerId);
             connection.query(sql, function (err, result) {
 
                 if (err) {
@@ -222,7 +217,7 @@ module.exports = {
                     event.osId = result.insertId;
                     event.tipoEventID = 1
                     console.log("A OS foi registrada com o ID = " + event.osId);
-                    sql = Util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID) VALUES (NOW(), %s, %s)', event.osId, event.tipoEventID)
+                    sql = util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID) VALUES (NOW(), %s, %s)', event.osId, event.tipoEventID)
                     connection.query(sql, function (err, result) {
                         if (err) {
                             console.log("Fazendo roolback - Problema na persistência do Evento");
@@ -263,7 +258,7 @@ module.exports = {
             console.log(os);
             console.log(os.technicalId);
             console.log(os.osId);
-            var sql = Util.format('UPDATE OS SET TECNICO_ID = %s WHERE ID = %s', os.technicalId, os.osId);
+            var sql = util.format('UPDATE OS SET TECNICO_ID = %s WHERE ID = %s', os.technicalId, os.osId);
             connection.query(sql, function (err, result) {
 
                 if (err) {
@@ -276,7 +271,7 @@ module.exports = {
                     console.log(result);
                     event.osId = os.osId;
                     console.log("A OS com o ID = " + event.osId + " foi atualizada");
-                    sql = Util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID, DESCRICAO, TECNICO_ID) VALUES (NOW(), %s, \'%s\',\'%s\', %s)', event.osId, event.tipoEventID, event.description, event.technicalId);
+                    sql = util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID, DESCRICAO, TECNICO_ID) VALUES (NOW(), %s, \'%s\',\'%s\', %s)', event.osId, event.tipoEventID, event.description, event.technicalId);
                     connection.query(sql, function (err, result) {
                         if (err) {
                             console.log("Fazendo roolback - Problema na persistência do Evento");
@@ -312,7 +307,7 @@ module.exports = {
                 console.log("Erro. Não foi possível iniciar transação..");
                 throw err;
             }
-            var sql = Util.format('UPDATE OS SET SITUACAO_ID = %s WHERE id = %s', object.situationId, object.osId);
+            var sql = util.format('UPDATE OS SET SITUACAO_ID = %s WHERE id = %s', object.situationId, object.osId);
             connection.query(sql, function (err, result) {
 
                 if (err) {
@@ -325,7 +320,7 @@ module.exports = {
                     console.log(result);
                     event.osId = object.osId;
                     console.log("A OS com o ID = " + event.osId + " foi atualizada");
-                    sql = Util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID, DESCRICAO, TECNICO_ID) VALUES (NOW(), %s, \'%s\',\'%s\', %s)', event.osId, event.tipoEventID, event.description, event.technicalId);
+                    sql = util.format('INSERT INTO evento (DATA_HORA, OS_ID, TIPO_EVENTO_ID, DESCRICAO, TECNICO_ID) VALUES (NOW(), %s, \'%s\',\'%s\', %s)', event.osId, event.tipoEventID, event.description, event.technicalId);
                     connection.query(sql, function (err, result) {
                         if (err) {
                             console.log("Fazendo roolback - Problema na persistência do Evento");
@@ -350,7 +345,7 @@ module.exports = {
         });
     },
     listClients: function listClients(callback) {
-        var sql = Util.format('SELECT * FROM CLIENTE');
+        var sql = util.format('SELECT * FROM CLIENTE');
         this.runQuery(sql, callback.bind(this));
     },
 
