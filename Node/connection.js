@@ -26,6 +26,15 @@ var connection = mysql.createConnection({
     database: 'helpnet'
 });
 
+function matchCustomer(customerOne, customerTwo, callback) {
+    if (customerOne.NOME == customerTwo.NOME &&
+        customerOne.CPF == customerTwo.CPF) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 module.exports = {
 
     //
@@ -102,10 +111,21 @@ module.exports = {
                             if (err) {
                                 // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet                                 
                             } else {
-                                if (rows.customer !== customer) {
+                                if (!matchCustomer(rows.customer, customer)) {
                                     // Aqui deve entrar uma chamada de atualização da tabela do Helpnet 
 
                                     console.log("Foi identificado divergencias nos dados dos cliente");
+
+                                    var sql = util.format('UPDATE CLIENTE SET CPF =\"%s\", NOME =\"%s\" WHERE ID = %d', rows.customer.CPF, rows.customer.NOME, customer.ID);
+                                    console.log(sql);
+                                    connection.query(sql, function (err, result) {
+                                        if (err) {
+                                            console.log("Problema na atualização dos dados do cliente");
+                                            console.log(err);
+                                        } else {
+                                            console.log("Os dados do cliente foi atualizado com sucesso");
+                                        }
+                                    });
                                 }
 
                             }
