@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 
-function createOSNumber(providerId){
+function createOSNumber(providerId) {
 
   var dt = dateTime.create();
   var formatted = dt.format('Y-m-d H:M:S');
@@ -31,7 +31,7 @@ function createOSNumber(providerId){
   var d = formatted.substring(8, 10);
   var h = formatted.substring(11, 13);
   var m = formatted.substring(14, 16);
-  var s =formatted.substring(17, 19);
+  var s = formatted.substring(17, 19);
 
   return providerId + y + month + d + h + m + s;
 }
@@ -79,7 +79,7 @@ app.get('/api/listOSBySituation', (req, res) => {
 app.post('/api/registerOS', (req, res) => {
   var os = req.body;
   os.number = createOSNumber(os.providerId);
-  connection.registerOS(os, function (err, rows, fields) {    
+  connection.registerOS(os, function (err, rows, fields) {
     res.send(JSON.stringify(rows));
   });
 });
@@ -106,13 +106,16 @@ app.post('/api/changeSituationOS', (req, res) => {
 
 
 app.get('/api/provider', (req, res) => {
-  
+
   console.log("Get Provider");
   var cpfCustomer = req.query.cpfCustomer;
   console.log("Received: " + cpfCustomer);
-  
-  connection.getCustomer(cpfCustomer, function (err, rows, fields) {    
-    res.json(JSON.stringify(rows));
+
+  connection.getCustomer(cpfCustomer, function (err, rows, fields) {
+    console.log("Printing result customer........");
+    const resultStr = JSON.stringify(rows);
+    console.log(resultStr);
+    res.send(resultStr);
   });
 });
 
