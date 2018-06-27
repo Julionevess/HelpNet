@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/version', (req, res) => {
-  res.send('Version_20180626_by_uilton');
+  res.send('Version_20180618_by_uilton');
 });
 
 app.get('/api/listSituationsOs', (req, res) => {
@@ -100,7 +100,9 @@ app.post('/api/changeSituationOS', (req, res) => {
   var object = req.body;
   connection.changeSituationOS(object, function (err, rows, fields) {
     console.log('Técnico associado', JSON.stringify(rows));
-    res.send(JSON.stringify(rows));
+    const resultStr = JSON.stringify(rows);
+    console.log(resultStr);
+    res.send(resultStr);
   });
 });
 
