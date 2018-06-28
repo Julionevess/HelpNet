@@ -52,7 +52,7 @@ CREATE TABLE `evento` (
   CONSTRAINT `FK_OS_ID` FOREIGN KEY (`OS_ID`) REFERENCES `os` (`ID`),
   CONSTRAINT `FK_TECNICO` FOREIGN KEY (`TECNICO_ID`) REFERENCES `tecnico` (`ID`),
   CONSTRAINT `FK_TIPO_EVENTO_ID` FOREIGN KEY (`TIPO_EVENTO_ID`) REFERENCES `tipo_evento` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `evento` */
 
@@ -84,7 +84,7 @@ CREATE TABLE `os` (
   CONSTRAINT `FK_PROVEDOR_ID` FOREIGN KEY (`PROVEDOR_ID`) REFERENCES `provedor` (`ID`),
   CONSTRAINT `FK_SITUACAO_ID` FOREIGN KEY (`SITUACAO_ID`) REFERENCES `situacao_os` (`ID`),
   CONSTRAINT `FK_TECNICO_ID` FOREIGN KEY (`TECNICO_ID`) REFERENCES `tecnico` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `os` */
 
@@ -138,7 +138,7 @@ CREATE TABLE `provedor` (
 
 /*Data for the table `provedor` */
 
-insert  into `provedor`(`ID`,`NOME`,`DESCRICAO`,`SITUACAO`,`BD_NOME`,`BD_URL`,`BD_PORTA`,`BD_USUARIO`,`BD_SENHA`,`BD_TABLE`,`BD_COLUMN_IDENTIFY`,`BD_SELECT`) values (1,'HOF','Homar Net','A','mkradius','45.234.10.2','3306','helpnet','h3lpn3ts','sis_cliente','cpf_cnpj','SELECT nome, nome_res, fone, celular, login, email, endereco, numero, bairro, cidade, estado, cep, bloqueado, cli_ativado'),(2,'JNS','Julio Prov','A','provider_jns','LOCALHOST','3306','admin','admin','cliente','cpf','SELECT *');
+insert  into `provedor`(`ID`,`NOME`,`DESCRICAO`,`SITUACAO`,`BD_NOME`,`BD_URL`,`BD_PORTA`,`BD_USUARIO`,`BD_SENHA`,`BD_TABLE`,`BD_COLUMN_IDENTIFY`,`BD_SELECT`) values (1,'Lagoa NET','Provedor nacidade de Lagoa de Itaenga','A','lagoanet','localhost','3306','helpnet','h3lpn3ts','sis_cliente','cpf_cnpj','SELECT nome, nome_res, fone, celular, login, email, endereco, numero, bairro, cidade, estado, cep, bloqueado, cli_ativado'),(2,'JNS','Julio Prov','A','provider_jns','LOCALHOST','3306','admin','admin','cliente','cpf','SELECT *');
 
 /*Table structure for table `situacao_os` */
 
