@@ -5,6 +5,8 @@ const nodemailer = require('nodemailer');
     //host: 'smtp.gmail.com',
     //port: 465,
     //proxy: 'http://arrays200.sefaz.pe.gov.br:8080/',
+    //proxy: 'http://julio.silva:S3faz1234$@arrays200.sefaz.pe.gov.br:8080/',    
+    //proxy: 'https://julio.silva:S3faz1234$@arrays200.sefaz.pe.gov.br:8080/',
     auth: {
         user: "speedupsolution@gmail.com",
         pass: "sp33d$olu"

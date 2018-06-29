@@ -21,8 +21,6 @@ var connection = mysql.createConnection({
 */
 //DEV
 
-
-
 var connection = mysql.createConnection({  
     host     : process.env.BD_HOST,
     user     : process.env.BD_USER,
@@ -173,29 +171,33 @@ module.exports = {
                     if (err) {
                         console.log("Ocorreu um erro na consulta a base do provedor");
                         console.log(err);
-                        callback(err, rows);
-                    } else {
+                        //callback(err, rows);
+                    } 
+
+                    if (typeof result !== 'undefined' &&  result[0] !== 'undefined'){
                         var customer = result[0];
-                        if (typeof customer !== 'undefined') {
-                            var finalResult = new Object();
-                            finalResult.provider = provider;
-                            finalResult.customer = customer;
-                            callback(err, finalResult);
-                        }else{
-                            interation++;
-                            if (totalInteration > interation) {
-                                getProviderCustomer(interation, totalInteration, providers, customerParam, function (err, rows, fields) {
-                                    callback(err, rows);
-                                });
+                    }
+                    if (typeof customer !== 'undefined') {
+                        var finalResult = new Object();
+                        finalResult.provider = provider;
+                        finalResult.customer = customer;
+                        callback(err, finalResult);
+                    }else{
+                        interation++;
+                        if (totalInteration > interation) {
+                            getProviderCustomer(interation, totalInteration, providers, customerParam, function (err, rows, fields) {
+                                callback(err, rows);
+                            });
+                        } else {
+                            if (typeof customerParam.ID == 'undefined') {
+                                callback(err, "Customer not found");
                             } else {
-                                if (typeof customerParam.ID == 'undefined') {
-                                    callback(err, "Customer not found");
-                                } else {
-                                    callback(err, rows);
-                                }
+                                callback(err, rows);
                             }
                         }
                     }
+
+
                 });
             }
         });

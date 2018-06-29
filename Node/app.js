@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 
-util.sendMail("teste");
+//util.sendMail("teste");
 
 function createOSNumber(providerId) {
 
