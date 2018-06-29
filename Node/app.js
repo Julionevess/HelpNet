@@ -11,8 +11,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var http = require('http');
 var connection = require('./connection');
-
 var dateTime = require('node-datetime');
+var util = require('./util/util');
 
 var app = express();
 var router = express.Router();
@@ -21,6 +21,9 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
+
+
+util.sendMail("teste");
 
 function createOSNumber(providerId) {
 

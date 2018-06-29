@@ -21,15 +21,14 @@ var connection = mysql.createConnection({
 */
 //DEV
 
+
+
 var connection = mysql.createConnection({  
     host     : process.env.BD_HOST,
     user     : process.env.BD_USER,
     password : process.env.BD_PASSWORD,
     database : process.env.BD_DATABASE
 });
-
-
-
 
 function matchCustomer(customerOne, customerTwo, callback) {
     if (customerOne.NOME == customerTwo.NOME &&
