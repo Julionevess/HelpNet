@@ -1,15 +1,15 @@
 const nodemailer = require('nodemailer');
 
   const transporter = nodemailer.createTransport({
-    //service: 'Gmail',
-    host: 'smtp.gmail.com',
-    port: 465,
-    seure: true,
+    service: 'Gmail',
+    //host: 'smtp.gmail.com',
+    //port: 465,
     //proxy: 'http://arrays200.sefaz.pe.gov.br:8080/',
     auth: {
         user: "speedupsolution@gmail.com",
         pass: "sp33d$olu"
-    }
+    },
+    tls: { rejectUnauthorized: false }
   });
   
   const mailOptions = {
