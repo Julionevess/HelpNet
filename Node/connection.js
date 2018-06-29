@@ -1,5 +1,6 @@
 var util = require('util');
 var mysql = require('mysql');
+var dotEnv = require('dotenv').config()
 
 //AWS
 // var connection = mysql.createConnection({  
@@ -19,12 +20,16 @@ var connection = mysql.createConnection({
 });
 */
 //DEV
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'helpnet'
+
+var connection = mysql.createConnection({  
+    host     : process.env.BD_HOST,
+    user     : process.env.BD_USER,
+    password : process.env.BD_PASSWORD,
+    database : process.env.BD_DATABASE
 });
+
+
+
 
 function matchCustomer(customerOne, customerTwo, callback) {
     if (customerOne.NOME == customerTwo.NOME &&
@@ -108,15 +113,22 @@ module.exports = {
                         // entra em loop buscando nos outros provedores, até encontrar ou percorrer todos os provedores
                         */
                         getProviderCustomer(interation, totalInteration, providers, customer, function (err, rows, fields) {
+                            callback(err, rows);                            
                             if (err) {
                                 // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet                                 
                             } else {
+                                console.log("rows ->" + JSON.stringify(rows));
                                 if (!matchCustomer(rows.customer, customer)) {
                                     // Aqui deve entrar uma chamada de atualização da tabela do Helpnet 
 
                                     console.log("Foi identificado divergencias nos dados dos cliente");
 
-                                    var sql = util.format('UPDATE CLIENTE SET CPF =\"%s\", NOME =\"%s\" WHERE ID = %d', rows.customer.CPF, rows.customer.NOME, customer.ID);
+                                    var sql;
+                                    if (typeof customer.ID === 'undefined'){
+                                        sql = util.format('INSERT INTO CLIENTE (CPF, NOME, USUARIO_ID, PROVIDER_ID) VALUES (%s, \'%s\', 1, %s)', rows.customer.CPF, rows.customer.NOME, rows.provider.ID);                                        
+                                    }else{
+                                        sql = util.format('UPDATE CLIENTE SET CPF =\"%s\", NOME =\"%s\" WHERE ID = %d', rows.customer.CPF, rows.customer.NOME, customer.ID);
+                                    }
                                     console.log(sql);
                                     connection.query(sql, function (err, result) {
                                         if (err) {
@@ -129,18 +141,7 @@ module.exports = {
                                 }
 
                             }
-                            interation++;
-                            if (totalInteration > interation) {
-                                getProviderCustomer(interation, totalInteration, providers, customer, function (err, rows, fields) {
-                                    callback(err, rows);
-                                });
-                            } else {
-                                if (typeof customer.ID == 'undefined') {
-                                    callback(err, "Customer not found");
-                                } else {
-                                    callback(err, rows);
-                                }
-                            }
+                           
                         });
                     } else {
                         callback(err, "No provider found");
@@ -181,6 +182,19 @@ module.exports = {
                             finalResult.provider = provider;
                             finalResult.customer = customer;
                             callback(err, finalResult);
+                        }else{
+                            interation++;
+                            if (totalInteration > interation) {
+                                getProviderCustomer(interation, totalInteration, providers, customerParam, function (err, rows, fields) {
+                                    callback(err, rows);
+                                });
+                            } else {
+                                if (typeof customerParam.ID == 'undefined') {
+                                    callback(err, "Customer not found");
+                                } else {
+                                    callback(err, rows);
+                                }
+                            }
                         }
                     }
                 });
