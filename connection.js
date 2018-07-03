@@ -1,4 +1,3 @@
-var util = require('util');
 var mysql = require('mysql');
 var utilHelpnet = require('./util/util');
 
