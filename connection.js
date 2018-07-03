@@ -1,5 +1,5 @@
 var mysql = require('mysql');
-var utilHelpnet = require('./util/util');
+var util = require('./util/util');
 
 var dotenev = require('dotenv').load()
 
@@ -475,7 +475,7 @@ module.exports = {
                                         "</tr>"+
                                     "</table>"
 
-                                    utilHelpnet.sendMail("Abertura da OS:" + os.number, osHtml );
+                                    util.sendMail("Abertura da OS:" + os.number, osHtml );
                                 }
                            });
 
