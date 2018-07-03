@@ -1,16 +1,129 @@
 var util = require('util');
 var mysql = require('mysql');
+var utilHelpnet = require('./util/util');
+
+var dotenev = require('dotenv').load()
+
 //HEROKU
-var connection = mysql.createConnection({
-    host: 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-    user: 'wnxoormb91xkfef9',
-    password: 'qmwan6b8lamtbp9j',
-    database: 's0xdx9gvx8au1ooc'
+/*
+var connection = mysql.createConnection({  
+    host     : 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+    user     : 'wnxoormb91xkfef9',
+    password : 'qmwan6b8lamtbp9j',
+    database : 's0xdx9gvx8au1ooc'
+});
+*/
+//DEV
+
+
+var connection = mysql.createConnection({  
+    host     : process.env.BD_HOST,
+    user     : process.env.BD_USER,
+    password : process.env.BD_PASSWORD,
+    database : process.env.BD_DATABASE
 });
 
+function syncronizedCustomer(customer, idCustomer, idProvider){
+    var sql;   
+    if (typeof idCustomer == 'undefined' || idCustomer == null){
+        sql = util.format("INSERT INTO CLIENTE (" +
+            "nome, cpf_cnpj, nome_res, fone, celular, login, email, endereco, numero, bairro, cidade, estado, cep, bloqueado, cli_ativado, "+
+            "USUARIO_ID, PROVIDER_ID) VALUES (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\', 1, %s)",
+            customer.nome,
+            customer.cpf_cnpj, 
+            customer.nome_res, 
+            customer.fone, 
+            customer.celular, 
+            customer.login, 
+            customer.email, 
+            customer.endereco, 
+            customer.numero, 
+            customer.bairro, 
+            customer.cidade, 
+            customer.estado, 
+            customer.cep, 
+            customer.bloqueado, 
+            customer.cli_ativado, 
+            idProvider);  
+    }else{
+        sql = util.format("UPDATE CLIENTE SET " +
+            "nome =\"%s\", " +
+            "cpf_cnpj =\"%s\", " +
+            "nome_res =\"%s\", " + 
+            "fone =\"%s\", " + 
+            "celular =\"%s\", " + 
+            "login =\"%s\", " + 
+            "email =\"%s\", " + 
+            "endereco =\"%s\", " + 
+            "numero =\"%s\", " + 
+            "bairro =\"%s\", " + 
+            "cidade =\"%s\", " + 
+            "estado =\"%s\", " + 
+            "cep =\"%s\", " + 
+            "bloqueado =\"%s\", " + 
+            "cli_ativado =\"%s\" " + 
+            "WHERE ID = %d", 
+            customer.nome, 
+            customer.cpf_cnpj,
+            customer.nome_res, 
+            customer.fone, 
+            customer.celular, 
+            customer.login, 
+            customer.email, 
+            customer.endereco, 
+            customer.numero, 
+            customer.bairro, 
+            customer.cidade, 
+            customer.estado, 
+            customer.cep, 
+            customer.bloqueado, 
+            customer.cli_ativado, 
+            idCustomer);
+    }
+    connection.query(sql, function (err, result, callback) {
+        if (err) {
+            console.log("Problema na atualização dos dados do cliente");
+            console.log(err);
+        } else {
+            console.log("Os dados do cliente foi atualizado com sucesso");
+        }
+    });
+};
+
 function matchCustomer(customerOne, customerTwo, callback) {
-    if (customerOne.NOME == customerTwo.NOME &&
-        customerOne.CPF == customerTwo.CPF) {
+
+    if(customerOne.nome == null) customerOne.nome = "null"; 
+    if(customerOne.cpf_cnpj ===  null) customerOne.cpf_cnpj  = "null"; 
+    if(customerOne.nome_res ===  null)customerOne.nome_res = "null"; 
+    if(customerOne.fone ===  null) customerOne.fone = "null"; 
+    if(customerOne.celular ===  null) customerOne.celular = "null"; 
+    if(customerOne.login ===  null) customerOne.login = "null"; 
+    if(customerOne.email ===  null) customerOne.email = "null"; 
+    if(customerOne.endereco ===  null) customerOne.endereco = "null"; 
+    if(customerOne.numero ===  null) customerOne.numero = "null"; 
+    if(customerOne.bairro ===  null) customerOne.bairro = "null"; 
+    if(customerOne.cidade ===  null) customerOne.ciadade = "null"; 
+    if(customerOne.estado ===  null) customerOne.estado  = "null"; 
+    if(customerOne.cep ===  null) customerOne.cep  = "null"; 
+    if(customerOne.bloqueado ===  null) customerOne.bloqueado  = "null"; 
+    if(customerOne.cli_ativado ===  null) customerOne.cli_ativado  = "null"; 
+ 
+    if (customerOne.nome == customerTwo.nome &&
+        customerOne.cpf_cnpj == customerTwo.cpf_cnpj &&
+        customerOne.nome_res == customerTwo.nome_res &&
+        customerOne.fone == customerTwo.fone &&
+        customerOne.celular == customerTwo.celular &&
+        customerOne.login == customerTwo.login &&
+        customerOne.email == customerTwo.email &&
+        customerOne.endereco == customerTwo.endereco &&
+        customerOne.numero == customerTwo.numero &&
+        customerOne.bairro == customerTwo.bairro &&
+        customerOne.cidade == customerTwo.cidade &&
+        customerOne.estado == customerTwo.estado &&
+        customerOne.cep == customerTwo.cep &&
+        customerOne.bloqueado == customerTwo.bloqueado &&
+        customerOne.cli_ativado == customerTwo.cli_ativado
+    ) {
         return true;
     } else {
         return false;
@@ -44,7 +157,7 @@ module.exports = {
     // Localiza o cliente na base do Helpnet 
     //
     getLocalCustomer: function getLocalCustomer(cpfCustomer, callback) {
-        var sql = util.format('SELECT * FROM cliente WHERE CPF = %s', cpfCustomer);
+        var sql = util.format('SELECT * FROM cliente WHERE cpf_cnpj = %s', cpfCustomer);
         connection.query(sql, function (err, result) {
             if (err) {
                 console.log("Ocorreu um erro na consulta ao cliente");
@@ -53,6 +166,8 @@ module.exports = {
             callback(err, result);
         });
     },
+
+   
 
     //
     // Recuper as informações atulizadas do cliente e do Provedor que o cliente está cadastrado
@@ -67,7 +182,7 @@ module.exports = {
                 var customer = rows[0];
             } else {
                 console.log("O cliente não foi localizado na base do Helpnet, será feita uma busca por todos os provedores");
-                customer.CPF = cpfCustomer;
+                customer.cpf_cnpj = cpfCustomer;
             }
 
             if (typeof customer.PROVIDER_ID !== 'undefined') {
@@ -90,39 +205,20 @@ module.exports = {
                         // entra em loop buscando nos outros provedores, até encontrar ou percorrer todos os provedores
                         */
                         getProviderCustomer(interation, totalInteration, providers, customer, function (err, rows, fields) {
+                            callback(err, rows);                            
                             if (err) {
                                 // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet                                 
                             } else {
-                                if (!matchCustomer(rows.customer, customer)) {
-                                    // Aqui deve entrar uma chamada de atualização da tabela do Helpnet 
+                                if (typeof rows !== 'undefined' && typeof rows.customer !== 'undefined' && typeof customer !== 'undefined' ){
+                                    if (!matchCustomer(rows.customer, customer)) {
+                                        // Aqui deve entrar uma chamada de atualização da tabela do Helpnet 
 
-                                    console.log("Foi identificado divergencias nos dados dos cliente");
+                                        console.log("Foi identificado divergencias nos dados dos cliente");
 
-                                    var sql = util.format('UPDATE CLIENTE SET CPF =\"%s\", NOME =\"%s\" WHERE ID = %d', rows.customer.CPF, rows.customer.NOME, customer.ID);
-                                    console.log(sql);
-                                    connection.query(sql, function (err, result) {
-                                        if (err) {
-                                            console.log("Problema na atualização dos dados do cliente");
-                                            console.log(err);
-                                        } else {
-                                            console.log("Os dados do cliente foi atualizado com sucesso");
-                                        }
-                                    });
+                                        syncronizedCustomer(rows.customer, customer.id, rows.provider.ID );
+                                    }
                                 }
-
-                            }
-                            interation++;
-                            if (totalInteration > interation) {
-                                getProviderCustomer(interation, totalInteration, providers, customer, function (err, rows, fields) {
-                                    callback(err, rows);
-                                });
-                            } else {
-                                if (typeof customer.ID == 'undefined') {
-                                    callback(err, "Customer not found");
-                                } else {
-                                    callback(err, rows);
-                                }
-                            }
+                            }                           
                         });
                     } else {
                         callback(err, "No provider found");
@@ -133,10 +229,10 @@ module.exports = {
             /*
             //Consulta do cliente na base do Provedor
             */
-            getProviderCustomer: function getProviderCustomer(interation, totalInteration, providers, customerParam, callback) {
+            function getProviderCustomer(interation, totalInteration, providers, customerParam, callback) {
 
                 var provider = providers[interation];
-                var cpfCustomer = customerParam.CPF;
+                var cpfCustomer = customerParam.cpf_cnpj;
 
                 var table = provider.BD_TABLE
                 var columnIdentify = provider.BD_COLUMN_IDENTIFY
@@ -148,26 +244,120 @@ module.exports = {
                     database: provider.BD_NOME
                 });
 
-                var sqlProvider = util.format('%s FROM %s WHERE %s =%s', select, table, columnIdentify, cpfCustomer);
+                var sqlProvider = util.format('%s FROM %s WHERE %s = %s', select, table, columnIdentify, cpfCustomer);
                 console.log(sqlProvider);
                 connectionProvider.query(sqlProvider, function (err, result) {
 
                     if (err) {
                         console.log("Ocorreu um erro na consulta a base do provedor");
                         console.log(err);
-                        callback(err, rows);
-                    } else {
+                        //callback(err, rows);
+                    } 
+
+                    if (typeof result !== 'undefined' &&  result[0] !== 'undefined'){
                         var customer = result[0];
-                        if (typeof customer !== 'undefined') {
-                            var finalResult = new Object();
-                            finalResult.provider = provider;
-                            finalResult.customer = customer;
-                            callback(err, finalResult);
+                    }
+                    if (typeof customer !== 'undefined') {
+                        var finalResult = new Object();
+                        finalResult.provider = provider;
+                        finalResult.customer = customer;
+                        callback(err, finalResult);
+                    }else{
+                        interation++;
+                        if (totalInteration > interation) {
+                            getProviderCustomer(interation, totalInteration, providers, customerParam, function (err, rows) {
+                                callback(err, rows);
+                            });
+                        } else {
+                            if (typeof customerParam.ID == 'undefined') {
+                                callback(err, "Customer not found");
+                            } else {
+                                callback(err, rows);
+                            }
                         }
                     }
+
+
                 });
             }
         });
+    },
+
+   
+    loadBaseCustomerFromProvider: function loadBaseCustomerFromProvider(providerID, callback) {
+    
+        var sql = util.format('SELECT * FROM provedor WHERE ID = %d', providerID);
+        connection.query(sql, function (err, result) {
+            if (err) {
+                console.log("Ocorreu um erro na consulta do provedor");
+                console.log(err);
+            } else {
+
+                var provider = result[0];
+                var table = provider.BD_TABLE
+                var select = provider.BD_SELECT
+                var connectionProvider = mysql.createConnection({
+                    host: provider.BD_URL,
+                    user: provider.BD_USUARIO,
+                    password: provider.BD_SENHA,
+                    database: provider.BD_NOME
+                });
+
+                var sqlProvider = util.format('%s FROM %s', select, table);                
+                connectionProvider.query(sqlProvider, function (err, result) {
+                    
+                    if (err) {
+                        console.log("Ocorreu um erro na consulta a base do provedor");
+                        console.log(err);
+                    } else{
+                            
+                            var totalInteration = result.length;
+                            var interation = 0;
+                            var customers = result;
+
+                            existCustomer(customers, interation, totalInteration, provider, function (err, result){
+                                callback(err, result);
+                            });
+                      
+                    }
+                    
+                });
+            }
+        });
+
+        function existCustomer(customers, interation, totalInteration, provider, callback) {
+            var customerId;
+            var customer  = customers[interation];
+            var sql = util.format('SELECT * FROM cliente WHERE cpf_cnpj = %s', customer.cpf_cnpj);
+            connection.query(sql, function (err, result) {                             
+                if (err){
+                    console.log("Problema na consulta do cliente na base do HelpNet");
+                    console.log(err);
+                }
+                if (typeof result[interation] !== 'undefined') {
+                    customerId =  result[interation].id
+                } 
+                syncronizedCustomer(customer, customerId, provider.ID); 
+                
+                
+                interation++;
+                if (totalInteration > interation) {
+                    existCustomer(customers, interation, totalInteration, provider, function (err, result){
+                        if (err){
+                            console.log("Problema na consulta do cliente na base do HelpNet");
+                            console.log(err);
+                        }
+                        callback(err, result);
+                    });
+                } else {
+                    callback(err, "Todos os clientes sincronizados");                    
+                }
+                
+                
+    
+            });
+        }
+
     },
 
     //
@@ -215,7 +405,7 @@ module.exports = {
                     });
                 } else {
                     var event = new Object();
-                    console.log(result);
+                    os.id = result.insertId; 
                     event.osId = result.insertId;
                     event.tipoEventID = 1
                     console.log("A OS foi registrada com o ID = " + event.osId);
@@ -236,6 +426,61 @@ module.exports = {
                                 });
                             }
                             console.log('Transação completa.');
+                            /*
+                            // Este passo é temporário, apenas enquando o APP do técnico não estiver funcional
+                            */
+                           sql = util.format('select cli.nome, prob.titulo from cliente as cli, problema_os as prob where cli.id = %s and prob.id = %s', os.clienteId, os.problemId)
+                           connection.query(sql, function (err, result) {
+                                if (err){
+                                    console.log("Ocorreu um erro ao tentar obter as informações da OS");
+                                    console.log(err);
+                                }else{                                    
+                                    var osDescription = new Object();
+                                    osDescription.numero = os.number;
+                                    osDescription.detalhesOS = os.details;
+                                    osDescription.NomeCliente = result[0].nome;
+                                    osDescription.problema = result[0].titulo;
+                                    var osHtml = "<h1>Informações da OS aberta:</h1>"+
+                                    "<table>"+
+                                        "<tr>"+
+                                            "<td>"+
+                                                "Número: "+
+                                            "</td>"+
+                                            "<td>"+
+                                                osDescription.numero+
+                                            "</td>"+
+                                        "</tr>"+
+                                        "<tr>"+
+                                            "<td>"+
+                                                "Detalhe da OS: "+
+                                            "</td>"+
+                                            "<td>"+
+                                                osDescription.detalhesOS+
+                                            "</td>"+
+                                        "</tr>"+
+                                        "<tr>"+
+                                            "<td>"+
+                                                "Nome do Cliente: "+
+                                            "</td>"+
+                                            "<td>"+
+                                                osDescription.NomeCliente+
+                                            "</td>"+
+                                        "</tr>"+
+                                        "<tr>"+
+                                            "<td>"+
+                                                "Problema: "+
+                                            "</td>"+
+                                            "<td>"+
+                                                osDescription.problema+
+                                            "</td>"+
+                                        "</tr>"+
+                                    "</table>"
+
+                                    utilHelpnet.sendMail("Abertura da OS:" + os.number, osHtml );
+                                }
+                           });
+
+                           // Aqui finaliza o bloco temporário
                             callback(err, os.number, fields);
                         });
                     });
@@ -256,10 +501,7 @@ module.exports = {
             if (err) {
                 console.log("Erro. Não foi possível iniciar transação..");
                 throw err;
-            }
-            console.log(os);
-            console.log(os.technicalId);
-            console.log(os.osId);
+            }            
             var sql = util.format('UPDATE OS SET TECNICO_ID = %s WHERE ID = %s', os.technicalId, os.osId);
             connection.query(sql, function (err, result) {
 

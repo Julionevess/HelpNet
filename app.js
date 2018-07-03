@@ -11,7 +11,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var http = require('http');
 var connection = require('./connection');
-
 var dateTime = require('node-datetime');
 
 var app = express();
@@ -21,6 +20,9 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
+
+
+
 
 function createOSNumber(providerId) {
 
@@ -41,7 +43,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/version', (req, res) => {
-  res.send('Version_20180618_by_uilton');
+  res.send('Version_20180703_by_uilton');
 });
 
 app.get('/api/listSituationsOs', (req, res) => {
@@ -57,10 +59,9 @@ app.get('/api/listProblems', (req, res) => {
 });
 
 app.get('/api/listOS', (req, res) => {
-  var providerId = req.query.providerId;
-  console.log(providerId);
+  var providerId = req.query.providerId;  
   connection.listOS(providerId, function (err, rows, fields) {
-    console.log('Lista Carregada.', "ok");
+    console.log('Lista de OS Carregada.', "ok");
     res.send(JSON.stringify(rows));
   });
 });
@@ -68,10 +69,8 @@ app.get('/api/listOS', (req, res) => {
 app.get('/api/listOSBySituation', (req, res) => {
   var providerId = req.query.providerId;
   var situationId = req.query.situationId;
-  console.log(providerId);
-  console.log(situationId);
   connection.listOSBySituation(providerId, situationId, function (err, rows, fields) {
-    console.log('Lista Carregada.', "ok");
+    console.log('Lista de situação Carregada.', "ok");
     res.send(JSON.stringify(rows));
   });
 });
@@ -86,7 +85,6 @@ app.post('/api/registerOS', (req, res) => {
 
 app.post('/api/associateTechnical', (req, res) => {
   var os = req.body;
-  console.log(os);
   connection.associateTechnical(os, function (err, rows, fields) {
     console.log('Técnico associado', JSON.stringify(rows));
     res.send(JSON.stringify(rows));
@@ -99,7 +97,7 @@ app.post('/api/associateTechnical', (req, res) => {
 app.post('/api/changeSituationOS', (req, res) => {
   var object = req.body;
   connection.changeSituationOS(object, function (err, rows, fields) {
-    console.log('Técnico associado', JSON.stringify(rows));
+    console.log('Mudança de situação', JSON.stringify(rows));
     res.send(JSON.stringify(rows));
   });
 });
@@ -107,22 +105,26 @@ app.post('/api/changeSituationOS', (req, res) => {
 
 app.get('/api/provider', (req, res) => {
 
-  console.log("Get Provider");
   var cpfCustomer = req.query.cpfCustomer;
-  console.log("Received: " + cpfCustomer);
 
   connection.getCustomer(cpfCustomer, function (err, rows, fields) {
-    console.log("Printing result customer........");
     const resultStr = JSON.stringify(rows);
-    console.log(resultStr);
     res.send(resultStr);
+  });
+});
+
+app.get('/api/loadBaseCustomerFromProvider', (req, res) => {
+  var providerID = req.query.providerID;
+  console.log(providerID);
+
+  connection.loadBaseCustomerFromProvider(providerID, function ( err, rows, fields) {
+    res.send(JSON.stringify(rows));
   });
 });
 
 // DO NOT USE THIS API, IT'S JUST FOR TEST PURPOSES.
 app.get('/api/listClients', (req, res) => {
   connection.listClients(function (err, rows, fields) {
-    console.log('Lista Carregada.', "ok");
     res.send(JSON.stringify(rows));
   });
 });
