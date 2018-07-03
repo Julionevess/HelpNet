@@ -1,7 +1,7 @@
 const util = require('util');
 const mysql = require('mysql');
 // const utilHelpnet = require('./util/util')
-
+   
 //HEROKU
 var connection = mysql.createConnection({     
     host: 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
