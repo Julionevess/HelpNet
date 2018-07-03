@@ -1,6 +1,6 @@
 var util = require('util');
 var mysql = require('mysql');
-var utilHelpnet = require('./util/util');
+var utilHelpnet = require('/util/util');
 
 //HEROKU
 var connection = mysql.createConnection({
