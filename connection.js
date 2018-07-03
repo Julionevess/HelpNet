@@ -1,6 +1,6 @@
-var util = require('util');
-var mysql = require('mysql');
-var utilHelpnet = require('/util/util');
+const util = require('util');
+const mysql = require('mysql');
+// const utilHelpnet = require('./util/util')
 
 //HEROKU
 var connection = mysql.createConnection({
@@ -427,43 +427,43 @@ module.exports = {
                                     osDescription.detalhesOS = os.details;
                                     osDescription.NomeCliente = result[0].nome;
                                     osDescription.problema = result[0].titulo;
-                                    var osHtml = "<h1>Informações da OS aberta:</h1>" +
-                                        "<table>" +
-                                        "<tr>" +
-                                        "<td>" +
-                                        "Número: " +
-                                        "</td>" +
-                                        "<td>" +
-                                        osDescription.numero +
-                                        "</td>" +
-                                        "</tr>" +
-                                        "<tr>" +
-                                        "<td>" +
-                                        "Detalhe da OS: " +
-                                        "</td>" +
-                                        "<td>" +
-                                        osDescription.detalhesOS +
-                                        "</td>" +
-                                        "</tr>" +
-                                        "<tr>" +
-                                        "<td>" +
-                                        "Nome do Cliente: " +
-                                        "</td>" +
-                                        "<td>" +
-                                        osDescription.NomeCliente +
-                                        "</td>" +
-                                        "</tr>" +
-                                        "<tr>" +
-                                        "<td>" +
-                                        "Problema: " +
-                                        "</td>" +
-                                        "<td>" +
-                                        osDescription.problema +
-                                        "</td>" +
-                                        "</tr>" +
-                                        "</table>"
+                                    // var osHtml = "<h1>Informações da OS aberta:</h1>" +
+                                    //     "<table>" +
+                                    //     "<tr>" +
+                                    //     "<td>" +
+                                    //     "Número: " +
+                                    //     "</td>" +
+                                    //     "<td>" +
+                                    //     osDescription.numero +
+                                    //     "</td>" +
+                                    //     "</tr>" +
+                                    //     "<tr>" +
+                                    //     "<td>" +
+                                    //     "Detalhe da OS: " +
+                                    //     "</td>" +
+                                    //     "<td>" +
+                                    //     osDescription.detalhesOS +
+                                    //     "</td>" +
+                                    //     "</tr>" +
+                                    //     "<tr>" +
+                                    //     "<td>" +
+                                    //     "Nome do Cliente: " +
+                                    //     "</td>" +
+                                    //     "<td>" +
+                                    //     osDescription.NomeCliente +
+                                    //     "</td>" +
+                                    //     "</tr>" +
+                                    //     "<tr>" +
+                                    //     "<td>" +
+                                    //     "Problema: " +
+                                    //     "</td>" +
+                                    //     "<td>" +
+                                    //     osDescription.problema +
+                                    //     "</td>" +
+                                    //     "</tr>" +
+                                    //     "</table>"
 
-                                    utilHelpnet.sendMail("Abertura da OS:" + os.number, osHtml);
+                                    // utilHelpnet.sendMail("Abertura da OS:" + os.number, osHtml);
                                 }
                             });
 
