@@ -1,20 +1,20 @@
 const util = require('util');
 const mysql = require('mysql');
 // const utilHelpnet = require('./util/util')
-   
+
 //HEROKU
-var connection = mysql.createConnection({     
+var connection = mysql.createConnection({
     host: 'lt80glfe2gj8p5n2.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
     user: 'wnxoormb91xkfef9',
     password: 'qmwan6b8lamtbp9j',
     database: 's0xdx9gvx8au1ooc'
 });
 
-function syncronizedCustomer(customer, idCustomer, idProvider) {
+function syncronizedCustomer(customer, idCustomer, idProvider){
     var sql;
-    if (typeof idCustomer == 'undefined' || idCustomer == null) {
+    if (typeof idCustomer == 'undefined' || idCustomer == null){
         sql = util.format("INSERT INTO CLIENTE (" +
-            "nome, cpf_cnpj, nome_res, fone, celular, login, email, endereco, numero, bairro, cidade, estado, cep, bloqueado, cli_ativado, " +
+            "nome, cpf_cnpj, nome_res, fone, celular, login, email, endereco, numero, bairro, cidade, estado, cep, bloqueado, cli_ativado, "+
             "USUARIO_ID, PROVIDER_ID) VALUES (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\', 1, %s)",
             customer.nome,
             customer.cpf_cnpj,
@@ -32,7 +32,7 @@ function syncronizedCustomer(customer, idCustomer, idProvider) {
             customer.bloqueado,
             customer.cli_ativado,
             idProvider);
-    } else {
+    }else{
         sql = util.format("UPDATE CLIENTE SET " +
             "nome =\"%s\", " +
             "cpf_cnpj =\"%s\", " +
@@ -79,21 +79,21 @@ function syncronizedCustomer(customer, idCustomer, idProvider) {
 
 function matchCustomer(customerOne, customerTwo, callback) {
 
-    if (customerOne.nome == null) customerOne.nome = "null";
-    if (customerOne.cpf_cnpj === null) customerOne.cpf_cnpj = "null";
-    if (customerOne.nome_res === null) customerOne.nome_res = "null";
-    if (customerOne.fone === null) customerOne.fone = "null";
-    if (customerOne.celular === null) customerOne.celular = "null";
-    if (customerOne.login === null) customerOne.login = "null";
-    if (customerOne.email === null) customerOne.email = "null";
-    if (customerOne.endereco === null) customerOne.endereco = "null";
-    if (customerOne.numero === null) customerOne.numero = "null";
-    if (customerOne.bairro === null) customerOne.bairro = "null";
-    if (customerOne.cidade === null) customerOne.ciadade = "null";
-    if (customerOne.estado === null) customerOne.estado = "null";
-    if (customerOne.cep === null) customerOne.cep = "null";
-    if (customerOne.bloqueado === null) customerOne.bloqueado = "null";
-    if (customerOne.cli_ativado === null) customerOne.cli_ativado = "null";
+    if(customerOne.nome == null) customerOne.nome = "null";
+    if(customerOne.cpf_cnpj ===  null) customerOne.cpf_cnpj  = "null";
+    if(customerOne.nome_res ===  null)customerOne.nome_res = "null";
+    if(customerOne.fone ===  null) customerOne.fone = "null";
+    if(customerOne.celular ===  null) customerOne.celular = "null";
+    if(customerOne.login ===  null) customerOne.login = "null";
+    if(customerOne.email ===  null) customerOne.email = "null";
+    if(customerOne.endereco ===  null) customerOne.endereco = "null";
+    if(customerOne.numero ===  null) customerOne.numero = "null";
+    if(customerOne.bairro ===  null) customerOne.bairro = "null";
+    if(customerOne.cidade ===  null) customerOne.ciadade = "null";
+    if(customerOne.estado ===  null) customerOne.estado  = "null";
+    if(customerOne.cep ===  null) customerOne.cep  = "null";
+    if(customerOne.bloqueado ===  null) customerOne.bloqueado  = "null";
+    if(customerOne.cli_ativado ===  null) customerOne.cli_ativado  = "null";
 
     if (customerOne.nome == customerTwo.nome &&
         customerOne.cpf_cnpj == customerTwo.cpf_cnpj &&
@@ -133,7 +133,7 @@ module.exports = {
     },
 
     //
-    // Listar todas as situações possiveis para uma OS 
+    // Listar todas as situações possiveis para uma OS
     //
     listSituations: function listSituations(callback) {
         var sql = util.format('SELECT * FROM SITUACAO_OS');
@@ -141,7 +141,7 @@ module.exports = {
     },
 
     //
-    // Localiza o cliente na base do Helpnet 
+    // Localiza o cliente na base do Helpnet
     //
     getLocalCustomer: function getLocalCustomer(cpfCustomer, callback) {
         var sql = util.format('SELECT * FROM cliente WHERE cpf_cnpj = %s', cpfCustomer);
@@ -192,20 +192,26 @@ module.exports = {
                         // entra em loop buscando nos outros provedores, até encontrar ou percorrer todos os provedores
                         */
                         getProviderCustomer(interation, totalInteration, providers, customer, function (err, rows, fields) {
-                            callback(err, rows);
+
                             if (err) {
-                                // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet                                 
+                                // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet
+                                console.log("Não foi possível consultar no provedor");
+                                callback(false, customer);
                             } else {
-                                if (typeof rows !== 'undefined' && typeof rows.customer !== 'undefined' && typeof customer !== 'undefined') {
+                                if (typeof rows !== 'undefined' && typeof rows.customer !== 'undefined' && typeof customer !== 'undefined' ){
                                     if (!matchCustomer(rows.customer, customer)) {
-                                        // Aqui deve entrar uma chamada de atualização da tabela do Helpnet 
+                                        // Aqui deve entrar uma chamada de atualização da tabela do Helpnet
 
                                         console.log("Foi identificado divergencias nos dados dos cliente");
 
-                                        syncronizedCustomer(rows.customer, customer.id, rows.provider.ID);
+                                        syncronizedCustomer(rows.customer, customer.id, rows.provider.ID );
                                     }
+                                    callback(err, rows);
+                                }else{
+                                    callback(err, customer);
                                 }
                             }
+
                         });
                     } else {
                         callback(err, "No provider found");
@@ -241,7 +247,7 @@ module.exports = {
                         //callback(err, rows);
                     }
 
-                    if (typeof result !== 'undefined' && result[0] !== 'undefined') {
+                    if (typeof result !== 'undefined' &&  result[0] !== 'undefined'){
                         var customer = result[0];
                     }
                     if (typeof customer !== 'undefined') {
@@ -249,7 +255,7 @@ module.exports = {
                         finalResult.provider = provider;
                         finalResult.customer = customer;
                         callback(err, finalResult);
-                    } else {
+                    }else{
                         interation++;
                         if (totalInteration > interation) {
                             getProviderCustomer(interation, totalInteration, providers, customerParam, function (err, rows) {
@@ -296,15 +302,15 @@ module.exports = {
                     if (err) {
                         console.log("Ocorreu um erro na consulta a base do provedor");
                         console.log(err);
-                    } else {
+                    } else{
 
-                        var totalInteration = result.length;
-                        var interation = 0;
-                        var customers = result;
+                            var totalInteration = result.length;
+                            var interation = 0;
+                            var customers = result;
 
-                        existCustomer(customers, interation, totalInteration, provider, function (err, result) {
-                            callback(err, result);
-                        });
+                            existCustomer(customers, interation, totalInteration, provider, function (err, result){
+                                callback(err, result);
+                            });
 
                     }
 
@@ -314,23 +320,23 @@ module.exports = {
 
         function existCustomer(customers, interation, totalInteration, provider, callback) {
             var customerId;
-            var customer = customers[interation];
+            var customer  = customers[interation];
             var sql = util.format('SELECT * FROM cliente WHERE cpf_cnpj = %s', customer.cpf_cnpj);
             connection.query(sql, function (err, result) {
-                if (err) {
+                if (err){
                     console.log("Problema na consulta do cliente na base do HelpNet");
                     console.log(err);
                 }
                 if (typeof result[interation] !== 'undefined') {
-                    customerId = result[interation].id
+                    customerId =  result[interation].id
                 }
                 syncronizedCustomer(customer, customerId, provider.ID);
 
 
                 interation++;
                 if (totalInteration > interation) {
-                    existCustomer(customers, interation, totalInteration, provider, function (err, result) {
-                        if (err) {
+                    existCustomer(customers, interation, totalInteration, provider, function (err, result){
+                        if (err){
                             console.log("Problema na consulta do cliente na base do HelpNet");
                             console.log(err);
                         }
@@ -348,7 +354,7 @@ module.exports = {
     },
 
     //
-    // Listar todas os problemas conhecidos que podem motivar uma abertura de OS 
+    // Listar todas os problemas conhecidos que podem motivar uma abertura de OS
     //
     listProblems: function listProblems(callback) {
         var sql = util.format('SELECT * FROM PROBLEMA_OS');
@@ -364,7 +370,7 @@ module.exports = {
     },
 
     //
-    // Listar as OS de um determinado provedor, filtrnado pela situação 
+    // Listar as OS de um determinado provedor, filtrnado pela situação
     //
     listOSBySituation: function listOSBySituation(providerId, situationId, callback) {
         var sql = util.format('SELECT * FROM OS WHERE PROVEDOR_ID = %d AND SITUACAO_ID = %d', providerId, situationId);
@@ -416,58 +422,58 @@ module.exports = {
                             /*
                             // Este passo é temporário, apenas enquando o APP do técnico não estiver funcional
                             */
-                            sql = util.format('select cli.nome, prob.titulo from cliente as cli, problema_os as prob where cli.id = %s and prob.id = %s', os.clienteId, os.problemId)
-                            connection.query(sql, function (err, result) {
-                                if (err) {
+                           sql = util.format('select cli.nome, prob.titulo from cliente as cli, problema_os as prob where cli.id = %s and prob.id = %s', os.clienteId, os.problemId)
+                           connection.query(sql, function (err, result) {
+                                if (err){
                                     console.log("Ocorreu um erro ao tentar obter as informações da OS");
                                     console.log(err);
-                                } else {
+                                }else{
                                     var osDescription = new Object();
                                     osDescription.numero = os.number;
                                     osDescription.detalhesOS = os.details;
                                     osDescription.NomeCliente = result[0].nome;
                                     osDescription.problema = result[0].titulo;
-                                    // var osHtml = "<h1>Informações da OS aberta:</h1>" +
-                                    //     "<table>" +
-                                    //     "<tr>" +
-                                    //     "<td>" +
-                                    //     "Número: " +
-                                    //     "</td>" +
-                                    //     "<td>" +
-                                    //     osDescription.numero +
-                                    //     "</td>" +
-                                    //     "</tr>" +
-                                    //     "<tr>" +
-                                    //     "<td>" +
-                                    //     "Detalhe da OS: " +
-                                    //     "</td>" +
-                                    //     "<td>" +
-                                    //     osDescription.detalhesOS +
-                                    //     "</td>" +
-                                    //     "</tr>" +
-                                    //     "<tr>" +
-                                    //     "<td>" +
-                                    //     "Nome do Cliente: " +
-                                    //     "</td>" +
-                                    //     "<td>" +
-                                    //     osDescription.NomeCliente +
-                                    //     "</td>" +
-                                    //     "</tr>" +
-                                    //     "<tr>" +
-                                    //     "<td>" +
-                                    //     "Problema: " +
-                                    //     "</td>" +
-                                    //     "<td>" +
-                                    //     osDescription.problema +
-                                    //     "</td>" +
-                                    //     "</tr>" +
-                                    //     "</table>"
+                                    var osHtml = "<h1>Informações da OS aberta:</h1>"+
+                                    "<table>"+
+                                        "<tr>"+
+                                            "<td>"+
+                                                "Número: "+
+                                            "</td>"+
+                                            "<td>"+
+                                                osDescription.numero+
+                                            "</td>"+
+                                        "</tr>"+
+                                        "<tr>"+
+                                            "<td>"+
+                                                "Detalhe da OS: "+
+                                            "</td>"+
+                                            "<td>"+
+                                                osDescription.detalhesOS+
+                                            "</td>"+
+                                        "</tr>"+
+                                        "<tr>"+
+                                            "<td>"+
+                                                "Nome do Cliente: "+
+                                            "</td>"+
+                                            "<td>"+
+                                                osDescription.NomeCliente+
+                                            "</td>"+
+                                        "</tr>"+
+                                        "<tr>"+
+                                            "<td>"+
+                                                "Problema: "+
+                                            "</td>"+
+                                            "<td>"+
+                                                osDescription.problema+
+                                            "</td>"+
+                                        "</tr>"+
+                                    "</table>"
 
-                                    // utilHelpnet.sendMail("Abertura da OS:" + os.number, osHtml);
+                                    utilHelpnet.sendMail("Abertura da OS:" + os.number, osHtml );
                                 }
-                            });
+                           });
 
-                            // Aqui finaliza o bloco temporário
+                           // Aqui finaliza o bloco temporário
                             callback(err, os.number, fields);
                         });
                     });
@@ -581,5 +587,3 @@ module.exports = {
     },
 
 };
-
-
