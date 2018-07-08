@@ -469,7 +469,7 @@ module.exports = {
                                         "</tr>"+
                                     "</table>"
 
-                                    utilHelpnet.sendMail("Abertura da OS:" + os.number, osHtml );
+                                    //utilHelpnet.sendMail("Abertura da OS:" + os.number, osHtml );
                                 }
                            });
 
