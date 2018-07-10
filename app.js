@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/version', (req, res) => {
-  res.send(JSON.stringify('Version_20180703_by_uilton'));
+  res.send(JSON.stringify('Version_20180710_by_uilton'));
 });
 
 app.get('/api/listSituationsOs', (req, res) => {
@@ -62,7 +62,7 @@ app.get('/api/listOS', (req, res) => {
   var providerId = req.query.providerId;  
   connection.listOS(providerId, function (err, rows, fields) {
     console.log('Lista de OS Carregada.', "ok");
-    res.send(JSON.stringify(rows));
+    res.send(JSON.stringify(rows));    
   });
 });
 
@@ -107,9 +107,13 @@ app.get('/api/provider', (req, res) => {
 
   var cpfCustomer = req.query.cpfCustomer;
 
-  connection.getCustomer(cpfCustomer, function (err, rows, fields) {
-    const resultStr = JSON.stringify(rows);
-    res.send(resultStr);
+  connection.getCustomer(cpfCustomer, function (err, result, fields) {
+    if (result === "404"){
+      res.status(404).send('Not found!');
+    }else{
+      const resultStr = JSON.stringify(result);
+      res.send(resultStr);
+    }
   });
 });
 
