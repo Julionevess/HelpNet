@@ -39,11 +39,11 @@ function createOSNumber(providerId) {
 }
 
 app.get('/', (req, res) => {
-  res.send(JSON.stringify('HelpNet - Webservice alive! Ready to work.'));
+  res.send(JSON.stringify('HelpNet: Dev - Webservice alive! Ready to work.'));
 });
 
 app.get('/api/version', (req, res) => {
-  res.send(JSON.stringify('Version_20180710_by_uilton'));
+  res.send(JSON.stringify('Version_20180711_by_uilton'));
 });
 
 app.get('/api/listSituationsOs', (req, res) => {
