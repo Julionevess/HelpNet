@@ -187,13 +187,11 @@ module.exports = {
       let sql;
       if (typeof customer.PROVIDER_ID !== "undefined") {
         sql = util.format(
-          "SELECT ID, NOME, DESCRICAO, SITUACAO, EMAIL, TELEFONE_CONTATO, CELULAR_CONTATO FROM provedor WHERE ID = %d",
+          "SELECT * FROM provedor WHERE ID = %d",
           customer.PROVIDER_ID
         );
       } else {
-        sql = util.format(
-          "SELECT SELECT ID, NOME, DESCRICAO, SITUACAO, EMAIL, TELEFONE_CONTATO, CELULAR_CONTATO FROM provedor"
-        );
+        sql = util.format("SELECT * FROM provedor");
       }
       connection.query(sql, function(err, result) {
         if (err) {
@@ -249,6 +247,19 @@ module.exports = {
         }
       });
 
+      function getProviderData(provider, callback) {
+        let providerResult = new Object();
+        providerResult.ID = provider.ID;
+        providerResult.NOME = provider.NOME;
+        providerResult.DESCRICAO = provider.DESCRICAO;
+        providerResult.SITUACAO = provider.SITUACAO;
+        providerResult.EMAIL = provider.EMAIL;
+        providerResult.TELEFONE_CONTATO = provider.TELEFONE_CONTATO;
+        providerResult.CELULAR_CONTATO = provider.CELULAR_CONTATO;
+
+        return providerResult;
+      }
+
       //Consulta do cliente na base do Provedor
       function getProviderCustomer(
         interation,
@@ -292,7 +303,7 @@ module.exports = {
 
           if (typeof customer !== "undefined") {
             let finalResult = new Object();
-            finalResult.provider = provider;
+            finalResult.provider = getProviderData(provider);
             finalResult.customer = customer;
             callback(err, finalResult);
           } else {
@@ -324,10 +335,7 @@ module.exports = {
     providerID,
     callback
   ) {
-    const sql = util.format(
-      "SELECT SELECT ID, NOME, DESCRICAO, SITUACAO, EMAIL, TELEFONE_CONTATO, CELULAR_CONTATO FROM provedor WHERE ID = %d",
-      providerID
-    );
+    const sql = util.format("SELECT * FROM provedor WHERE ID = %d", providerID);
     connection.query(sql, function(err, result) {
       if (err) {
         console.log("Ocorreu um erro na consulta do provedor");
