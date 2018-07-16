@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/version", (req, res) => {
-  res.send(JSON.stringify("Version_20180713_by_uilton"));
+  res.send(JSON.stringify("Version_20180716_by_uilton"));
 });
 
 app.get("/api/listSituationsOs", (req, res) => {

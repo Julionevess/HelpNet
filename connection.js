@@ -16,28 +16,36 @@ const connection = mysql.createConnection({
   database: process.env.BD_DATABASE
 });
 
-function syncronizedCustomer(customer, idCustomer, idProvider) {
+function syncronizedCustomer(
+  customerFromProvider,
+  idCustomerFromHelpnet,
+  idProvider,
+  callback
+) {
   let sql;
-  if (typeof idCustomer == "undefined" || idCustomer == null) {
+  if (
+    typeof idCustomerFromHelpnet == "undefined" ||
+    idCustomerFromHelpnet == null
+  ) {
     sql = util.format(
       "INSERT INTO cliente (" +
         "nome, cpf_cnpj, nome_res, fone, celular, login, email, endereco, numero, bairro, cidade, estado, cep, bloqueado, cli_ativado, " +
         "USUARIO_ID, PROVIDER_ID, data_inclusao) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s', 1, %s, NOW())",
-      customer.nome,
-      customer.cpf_cnpj,
-      customer.nome_res,
-      customer.fone,
-      customer.celular,
-      customer.login,
-      customer.email,
-      customer.endereco,
-      customer.numero,
-      customer.bairro,
-      customer.cidade,
-      customer.estado,
-      customer.cep,
-      customer.bloqueado,
-      customer.cli_ativado,
+      customerFromProvider.nome,
+      customerFromProvider.cpf_cnpj,
+      customerFromProvider.nome_res,
+      customerFromProvider.fone,
+      customerFromProvider.celular,
+      customerFromProvider.login,
+      customerFromProvider.email,
+      customerFromProvider.endereco,
+      customerFromProvider.numero,
+      customerFromProvider.bairro,
+      customerFromProvider.cidade,
+      customerFromProvider.estado,
+      customerFromProvider.cep,
+      customerFromProvider.bloqueado,
+      customerFromProvider.cli_ativado,
       idProvider
     );
   } else {
@@ -60,35 +68,40 @@ function syncronizedCustomer(customer, idCustomer, idProvider) {
         'cli_ativado ="%s", ' +
         "data_atualizacao =  NOW() " +
         "WHERE ID = %d",
-      customer.nome,
-      customer.cpf_cnpj,
-      customer.nome_res,
-      customer.fone,
-      customer.celular,
-      customer.login,
-      customer.email,
-      customer.endereco,
-      customer.numero,
-      customer.bairro,
-      customer.cidade,
-      customer.estado,
-      customer.cep,
-      customer.bloqueado,
-      customer.cli_ativado,
-      idCustomer
+      customerFromProvider.nome,
+      customerFromProvider.cpf_cnpj,
+      customerFromProvider.nome_res,
+      customerFromProvider.fone,
+      customerFromProvider.celular,
+      customerFromProvider.login,
+      customerFromProvider.email,
+      customerFromProvider.endereco,
+      customerFromProvider.numero,
+      customerFromProvider.bairro,
+      customerFromProvider.cidade,
+      customerFromProvider.estado,
+      customerFromProvider.cep,
+      customerFromProvider.bloqueado,
+      customerFromProvider.cli_ativado,
+      idCustomerFromHelpnet
     );
   }
-  connection.query(sql, function(err, result, callback) {
+  connection.query(sql, function(err, result) {
     if (err) {
       console.log("Problema na atualização dos dados do cliente");
       console.log(err);
     } else {
       console.log("Os dados do cliente foram atualizados com sucesso");
     }
+    if (typeof result !== "undefined" && result.insertId !== "undefined") {
+      callback(err, result.insertId);
+    } else {
+      callback(err, result);
+    }
   });
 }
 
-function matchCustomer(customerOne, customerTwo, callback) {
+function matchCustomer(customerOne, customerTwo) {
   if (customerOne.nome == null) customerOne.nome = "null";
   if (customerOne.cpf_cnpj === null) customerOne.cpf_cnpj = "null";
   if (customerOne.nome_res === null) customerOne.nome_res = "null";
@@ -209,31 +222,49 @@ module.exports = {
               totalInteration,
               providers,
               customer,
-              function(err, rows, fields) {
+              function(err, rows) {
+                let customerFromProvider = rows.customer;
+                let idCustomerFromHelpnet = customer.id;
+                let returnFull = rows;
                 if (err) {
                   // Quando ocorre problema na consulta dos provedores, será retornado o cliente da base do Helpnet
                   console.log("Não foi possível consultar no provedor");
-                  callback(false, customer);
+                  let finalResult = buildResultFull(
+                    providers[interation],
+                    customer
+                  );
+                  callback(false, finalResult);
                 } else {
                   if (
-                    typeof rows !== "undefined" &&
-                    typeof rows.customer !== "undefined" &&
+                    typeof returnFull !== "undefined" &&
+                    typeof customerFromProvider !== "undefined" &&
                     typeof customer !== "undefined"
                   ) {
-                    if (!matchCustomer(rows.customer, customer)) {
-                      // Aqui deve entrar uma chamada de atualização da tabela do Helpnet
-
+                    if (!matchCustomer(customerFromProvider, customer)) {
                       console.log(
-                        "Foi identificado divergencias nos dados dos cliente"
+                        "Foi identificado divergencias nos dados do cliente"
                       );
 
                       syncronizedCustomer(
-                        rows.customer,
-                        customer.id,
-                        rows.provider.ID
+                        customerFromProvider,
+                        idCustomerFromHelpnet,
+                        returnFull.provider.ID,
+                        function(err, result) {
+                          if (typeof result !== "undefined" && result !== 0) {
+                            returnFull.customer.id = result;
+                          } else {
+                            returnFull.customer.id = idCustomerFromHelpnet;
+                          }
+                          callback(err, returnFull);
+                        }
                       );
+                    } else {
+                      console.log(
+                        "O cliente já está sincronizado com a base do Helpnet"
+                      );
+                      returnFull.customer.id = idCustomerFromHelpnet;
+                      callback(err, returnFull);
                     }
-                    callback(err, rows);
                   } else {
                     console.log("Não encontrou em lugar nenhum");
                     callback(err, "404");
@@ -247,7 +278,14 @@ module.exports = {
         }
       });
 
-      function getProviderData(provider, callback) {
+      function buildResultFull(provider, customer) {
+        let finalResult = new Object();
+        finalResult.provider = getProviderData(provider);
+        finalResult.customer = customer;
+        return finalResult;
+      }
+
+      function getProviderData(provider) {
         let providerResult = new Object();
         providerResult.ID = provider.ID;
         providerResult.NOME = provider.NOME;
@@ -296,15 +334,12 @@ module.exports = {
             //callback(err, rows);
           }
 
-          let customer = "undefined";
+          let customer = undefined;
           if (typeof result !== "undefined" && result[0] !== "undefined") {
             customer = result[0];
           }
-
           if (typeof customer !== "undefined") {
-            let finalResult = new Object();
-            finalResult.provider = getProviderData(provider);
-            finalResult.customer = customer;
+            let finalResult = buildResultFull(provider, customer);
             callback(err, finalResult);
           } else {
             interation++;
@@ -396,7 +431,16 @@ module.exports = {
         if (typeof result[0] !== "undefined") {
           customerId = result[0].id;
         }
-        syncronizedCustomer(customer, customerId, provider.ID);
+        syncronizedCustomer(customer, customerId, provider.ID, function(
+          err,
+          result
+        ) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(JSON.stringify(result));
+          }
+        });
 
         interation++;
         if (totalInteration > interation) {
