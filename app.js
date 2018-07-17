@@ -110,14 +110,15 @@ app.get("/api/provider", (req, res) => {
 
   connection.getCustomer(cpfCustomer, function(err, result, fields) {
     if (result === "404") {
-      res.status(404).send(JSON.stringify("Client not found!"));
+      let customerNotFound = new Object();
+      customerNotFound.message = "Customer not found. CPF/CNPJ: " + cpfCustomer;
+      res.status(404).send(JSON.stringify(customerNotFound));
     } else {
       const resultStr = JSON.stringify(result);
       res.send(resultStr);
     }
   });
 });
-
 app.get("/api/loadBaseCustomerFromProvider", (req, res) => {
   var providerID = req.query.providerID;
   console.log(providerID);
