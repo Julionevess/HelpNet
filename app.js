@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/version", (req, res) => {
-  res.send(JSON.stringify("Version_20180716_by_uilton"));
+  res.send(JSON.stringify("Version_20180717_by_uilton"));
 });
 
 app.get("/api/listSituationsOs", (req, res) => {
@@ -110,7 +110,7 @@ app.get("/api/provider", (req, res) => {
 
   connection.getCustomer(cpfCustomer, function(err, result, fields) {
     if (result === "404") {
-      res.status(404).send("Not found!");
+      res.status(404).send(JSON.stringify("Client not found!"));
     } else {
       const resultStr = JSON.stringify(result);
       res.send(resultStr);
