@@ -8,9 +8,9 @@ MySQL - 5.1.44-community : Database - helpnet
 
 /*!40101 SET SQL_MODE=''*/;
 
-create database if not exists `helpnet`;
+create database if not exists `s0xdx9gvx8au1ooc`;
 
-USE `helpnet`;
+USE `s0xdx9gvx8au1ooc`;
 
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;

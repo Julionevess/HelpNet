@@ -4,6 +4,8 @@ const utilHelpnet = require("./util/util");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").load();
+} else {
+  console.log("Ambiente de produção");
 }
 
 // LOCALHOST
