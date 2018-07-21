@@ -1,7 +1,10 @@
 const util = require("util");
 const mysql = require("mysql");
 const utilHelpnet = require("./util/util");
-require("dotenv").load();
+
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").load();
+}
 
 // LOCALHOST
 // BD_HOST=localhost
@@ -619,7 +622,6 @@ module.exports = {
                   osDescription.cep = result[0].cep;
                   osDescription.dataCadastroProvedor = result[0].cadastro;
 
-                  
                   const osHtml = utilHelpnet.builderContentMailNewOS(
                     osDescription
                   );
