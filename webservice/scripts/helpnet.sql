@@ -20,19 +20,35 @@ USE `helpnet`;
 DROP TABLE IF EXISTS `cliente`;
 
 CREATE TABLE `cliente` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `NOME` varchar(100) NOT NULL,
-  `CPF` varchar(11) NOT NULL,
-  `USUARIO_ID` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `cpf_cnpj` varchar(14) NOT NULL,
+  `USUARIO_ID` bigint(20) DEFAULT NULL,
   `PROVIDER_ID` bigint(20) NOT NULL,
-  PRIMARY KEY (`ID`),
+  `nome_res` varchar(100) DEFAULT NULL,
+  `fone` varchar(100) DEFAULT NULL,
+  `celular` varchar(100) DEFAULT NULL,
+  `login` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `endereco` varchar(100) DEFAULT NULL,
+  `numero` varchar(100) DEFAULT NULL,
+  `bairro` varchar(100) DEFAULT NULL,
+  `cidade` varchar(100) DEFAULT NULL,
+  `estado` varchar(100) DEFAULT NULL,
+  `cep` varchar(100) DEFAULT NULL,
+  `bloqueado` varchar(100) NOT NULL,
+  `cli_ativado` varchar(100) NOT NULL,
+  `data_inclusao` datetime DEFAULT NULL,
+  `data_atualizacao` datetime DEFAULT NULL,
+  `cadastro` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `FK_USUARIO` (`USUARIO_ID`),
   CONSTRAINT `FK_USUARIO` FOREIGN KEY (`USUARIO_ID`) REFERENCES `usuario` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3402 DEFAULT CHARSET=latin1;
 
 /*Data for the table `cliente` */
 
-insert  into `cliente`(`ID`,`NOME`,`CPF`,`USUARIO_ID`,`PROVIDER_ID`) values (1,'Jose','01234567890',3,1),(2,'Maria','11111111111',1,1),(3,'Silva','22222222222',2,1);
+insert  into `cliente`(`id`,`nome`,`cpf_cnpj`,`USUARIO_ID`,`PROVIDER_ID`,`nome_res`,`fone`,`celular`,`login`,`email`,`endereco`,`numero`,`bairro`,`cidade`,`estado`,`cep`,`bloqueado`,`cli_ativado`,`data_inclusao`,`data_atualizacao`,`cadastro`) values (1,'Sebastina M de Carvalho','01234567890',1,1,'Cliente Teste',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'nao','s','2018-07-16 13:58:00',NULL,NULL),(3003,'ALDO JERONIMO DA SILVA','64218120404',1,2,'ALDO','null','null','aldog@lagoanet.com.br','null','RUA ANTONIO FRANCISCO DA SILVA ','N 265','CENTRO','LAGOA DO CARRO','PE','55820-000','nao','s','2018-07-16 18:06:58','2018-07-21 17:03:03','21/08/2017'),(3004,'TACIANA SILVA DA ROCHA','07319839474',1,2,'TACIANA','null','(81)992920866','tassianas@lagoanet.com.br','null','PRACA DA SOLEDADE','null','CENTRO','LAGOA DO CARRO','PE','55820-000','nao','s','2018-07-16 18:07:15','2018-07-21 17:03:03','29/08/2017'),(3005,'LAGOAPREV','05018469000171',1,2,'LAGOAPREV','null','(81)995253691','lagoaprev@lagoanet.com.br','null','RUA BARÃO DE SÃO BORJA ','86','centro','LAGOA DO CARRO','PE','55820-000','sim','s','2018-07-16 18:07:21','2018-07-21 17:03:04','05/09/2017'),(3006,'JUCELINO ERNESTO DO REGO','88134717420',1,2,'JUCELINO','null','(81)993930070','jucelino@lagoanet.com.br','null','RUA ANTONIO GONÇALVES ','null','CENTRO','LAGOA DO CARRO','PE','55820-000','nao','s','2018-07-16 18:07:34','2018-07-21 17:03:05','28/02/2018'),(3007,'boss','55614450220',1,2,'boss','null','null','boss','null','null','null','null','null','PE','null','nao','s','2018-07-16 18:07:42',NULL,NULL),(3008,'EDUARDA MARIA DA SILVA','12576532454',1,2,'EDUARDA','null','(81)992519166','eduardam@lagoanet.com.br','null','RUA SAO JOSE ','182','CENTRO','LAGOA DO CARRO','PE','55820-000','nao','s','2018-07-21 16:02:30','2018-07-21 17:03:03','30/08/2017'),(3010,'MARIA JANIRA DO NASCIMENTO','02632482402',1,2,'MARIA','null','(81)991554218','janira@lagoanet.com.br','null','RUA PEDRO VICENTE DE LIMA','800','CENTRO','LAGOA DO CARRO','PE','55820-000','nao','s','2018-07-21 16:27:32','2018-07-21 17:03:03','03/11/2017'),(3011,'ABERLADO KENELINO ALVES LIMA','04171542405',1,2,'ABERLADO','null','(81)994381188','abelardok@lagoanet.com.br','null','LOT. LUIZ ANTONIO MARTINS','RODOVIA PE 90','CENTRO','LAGOA DO CARRO','PE','55820-000','sim','n','2018-07-21 17:03:03',NULL,'10/08/2017'),(3012,'ADAMILTON CORREIA DE OLIVEIRA','07133593408',1,2,'ADAILTON','null','(81)992752600','adamilton@lagoanet.com.br','null','RUA CORONEL ANTONIO TAVARES','null','MUTIRAO','LAGOA DO CARRO','PE','55820-000','nao','s','2018-07-21 17:03:03',NULL,'05/12/2017');
 
 /*Table structure for table `evento` */
 
@@ -52,7 +68,7 @@ CREATE TABLE `evento` (
   CONSTRAINT `FK_OS_ID` FOREIGN KEY (`OS_ID`) REFERENCES `os` (`ID`),
   CONSTRAINT `FK_TECNICO` FOREIGN KEY (`TECNICO_ID`) REFERENCES `tecnico` (`ID`),
   CONSTRAINT `FK_TIPO_EVENTO_ID` FOREIGN KEY (`TIPO_EVENTO_ID`) REFERENCES `tipo_evento` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=latin1;
 
 /*Data for the table `evento` */
 
@@ -84,7 +100,7 @@ CREATE TABLE `os` (
   CONSTRAINT `FK_PROVEDOR_ID` FOREIGN KEY (`PROVEDOR_ID`) REFERENCES `provedor` (`ID`),
   CONSTRAINT `FK_SITUACAO_ID` FOREIGN KEY (`SITUACAO_ID`) REFERENCES `situacao_os` (`ID`),
   CONSTRAINT `FK_TECNICO_ID` FOREIGN KEY (`TECNICO_ID`) REFERENCES `tecnico` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=latin1;
 
 /*Data for the table `os` */
 
@@ -133,12 +149,15 @@ CREATE TABLE `provedor` (
   `BD_TABLE` varchar(50) DEFAULT NULL,
   `BD_COLUMN_IDENTIFY` varchar(100) DEFAULT NULL,
   `BD_SELECT` varchar(255) DEFAULT NULL,
+  `EMAIL` varchar(100) DEFAULT NULL,
+  `TELEFONE_CONTATO` varchar(20) DEFAULT NULL,
+  `CELULAR_CONTATO` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `provedor` */
 
-insert  into `provedor`(`ID`,`NOME`,`DESCRICAO`,`SITUACAO`,`BD_NOME`,`BD_URL`,`BD_PORTA`,`BD_USUARIO`,`BD_SENHA`,`BD_TABLE`,`BD_COLUMN_IDENTIFY`,`BD_SELECT`) values (1,'Lagoa NET','Provedor nacidade de Lagoa de Itaenga','A','lagoanet','localhost','3306','helpnet','h3lpn3ts','sis_cliente','cpf_cnpj','SELECT nome, nome_res, fone, celular, login, email, endereco, numero, bairro, cidade, estado, cep, bloqueado, cli_ativado'),(2,'JNS','Julio Prov','A','provider_jns','LOCALHOST','3306','admin','admin','cliente','cpf','SELECT *');
+insert  into `provedor`(`ID`,`NOME`,`DESCRICAO`,`SITUACAO`,`BD_NOME`,`BD_URL`,`BD_PORTA`,`BD_USUARIO`,`BD_SENHA`,`BD_TABLE`,`BD_COLUMN_IDENTIFY`,`BD_SELECT`,`EMAIL`,`TELEFONE_CONTATO`,`CELULAR_CONTATO`) values (1,'Lagoa NET','Provedor nacidade de Lagoa de Itaenga','A','mkradius','45.234.10.18','3306','helpnet','h3lpn3ts','sis_cliente','cpf_cnpj','SELECT id, nome, cpf_cnpj, nome_res, fone, celular, login, email, endereco, numero, bairro, cidade, estado, cep, bloqueado, cli_ativado, cadastro','contato@lagoanet-pe.com.br','(81) 3621-9287','(81) 98914-3502'),(2,'Teste','Provedor Teste','A','aaa','aaa','aaa','aaa','aaa','aaa','aaa','aaa','aaa','aaa','aaa');
 
 /*Table structure for table `situacao_os` */
 
