@@ -3,12 +3,6 @@ const mysql = require("mysql");
 const utilHelpnet = require("./util/util");
 require("dotenv").load();
 
-// LOCALHOST
-// BD_HOST=localhost
-// BD_USER=root
-// BD_PASSWORD=root
-// BD_DATABASE=helpnet
-
 const connection = mysql.createConnection({
   host: process.env.BD_HOST,
   user: process.env.BD_USER,
@@ -185,6 +179,7 @@ module.exports = {
   // Recuper as informações atulizadas do cliente e do Provedor que o cliente está cadastrado
   //
   getCustomer: function getCustomer(cpfCustomer, callback) {
+    console.log("pesquisando cliente...");
     this.getLocalCustomer(cpfCustomer, function(err, rows, fields) {
       let customer = new Object();
       if (typeof rows[0] !== "undefined") {
